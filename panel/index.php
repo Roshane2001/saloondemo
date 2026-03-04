@@ -11,10 +11,19 @@ if(isset($_POST['login']))
     $ret=mysqli_fetch_array($query);
     if($ret>0){
       $_SESSION['bpmsaid']=$ret['ID'];
-      echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
+      $_SESSION['bpmsut'] = 'admin';
+      echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>"; // Redirect admin to main dashboard
     }
     else{
-    echo "<script>alert('Invalid Details');</script>";
+      $query=mysqli_query($con,"select ID from tblcashier where  UserName='$adminuser' && Password='$password' ");
+      $ret=mysqli_fetch_array($query);
+      if($ret>0){
+        $_SESSION['bpmsaid']=$ret['ID'];
+        $_SESSION['bpmsut'] = 'cashier';
+        echo "<script type='text/javascript'> document.location ='cashier-dashboard.php'; </script>"; // Redirect cashier to cashier dashboard
+      } else {
+        echo "<script>alert('Invalid Details');</script>";
+      }
     }
   }
   $branding_query = mysqli_query($con, "select * from branding where id=1");

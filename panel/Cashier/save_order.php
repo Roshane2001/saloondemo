@@ -27,6 +27,15 @@ $customerPhone = isset($data['customerPhone']) ? mysqli_real_escape_string($con,
 $invoiceId = mt_rand(100000000, 999999999);
 $cashierId = $_SESSION['bpmsaid'];
 
+$branchId = 0;
+if(isset($_SESSION['bpmsut']) && $_SESSION['bpmsut'] == 'cashier'){
+    $query_branch = mysqli_query($con, "SELECT branch_id FROM tblcashier WHERE ID='$cashierId'");
+    $result_branch = mysqli_fetch_assoc($query_branch);
+    if($result_branch){
+        $branchId = $result_branch['branch_id'];
+    }
+}
+
 $success = true;
 $errorMsg = "";
 
@@ -35,8 +44,8 @@ foreach ($items as $item) {
     $qty = intval($item['qty']);
     
     // Insert into tblinvoice
-    $query = "INSERT INTO tblinvoice (Userid, ServiceId, BillingId, tax, discount, qty, total, received_amount, payment_method, type, CashierId, PostingDate, customer_phone) 
-              VALUES (NULL, '$serviceId', '$invoiceId', '$taxRate', '$discount', '$qty', '$grandTotal', '$amountReceived', '$paymentMethod', 1, '$cashierId', NOW(), '$customerPhone')";
+    $query = "INSERT INTO tblinvoice (Userid, ServiceId, BillingId, tax, discount, qty, total, received_amount, payment_method, type, CashierId, branch_id, PostingDate, customer_phone) 
+              VALUES (NULL, '$serviceId', '$invoiceId', '$taxRate', '$discount', '$qty', '$grandTotal', '$amountReceived', '$paymentMethod', 1, '$cashierId', '$branchId', NOW(), '$customerPhone')";
               
     if (!mysqli_query($con, $query)) {
         $success = false;

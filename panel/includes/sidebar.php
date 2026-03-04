@@ -25,82 +25,26 @@
   <div class=" sidebar" role="navigation">
       <div class="navbar-collapse">
           <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left navigation" id="cbp-spmenu-s1">
+
               <ul class="nav sidetab" id="leftCol" style="margin-top:7% ;">
+                  <?php if ($_SESSION['bpmsut'] == 'admin') { ?>
                   <li class="nav-item">
                       <a href="dashboard.php"><i class="ti ti-smart-home me-2"></i> Dashboard</a>
                   </li>
-
-
+                  <!--Branch List-->
                   <li class="nav-item">
-                      <a href="#"><i class="ti ti-users me-2"></i>Customer <span class="fa arrow"></span></a>
+                      <a href="#"><i class="ti ti-users me-2"></i>Branch<span class="fa arrow"></span></a>
                       <ul class="nav nav-second-level collapse">
                           <li class="nav-item">
-                              <a href="add-customer.php"><i class="ti ti-circle me-2 font"></i>Add</a>
+                              <a href="cashier-account-create.php"><i class="ti ti-circle me-2 font"></i>Branch Chsier
+                                  Create</a>
                           </li>
                           <li class="nav-item">
-                              <a href="customer-list.php"><i class="ti ti-circle me-2 font"></i>Manage</a>
-                          </li>
-                          <li class="nav-item">
-                              <a href="visit.php"><i class="ti ti-circle me-2 font"></i>Visit</a>
+                              <a href="cashier-account-list.php"><i class="ti ti-circle me-2 font"></i>Branch Chsier
+                                  List</a>
                           </li>
                       </ul>
-
                   </li>
-
-
-                  <!--<li class="nav-item">
-                      <a href="all-appointment.php"><i class="ti ti-list me-2"></i>Appointment<span
-                              class="fa arrow"></span></a>
-                      <ul class="nav nav-second-level collapse">
-                          <li class="nav-item">
-                              <a href="add-appointment.php"><i class="ti ti-circle me-2 font"></i>Add Appointment</a>
-                          </li>
-                          <li class="nav-item">
-                              <a href="all-appointment.php"><i class="ti ti-circle me-2 font"></i>All Appointment</a>
-                          </li>
-                          !--<li class="nav-item">-->
-                  <!--  <a href="new-appointment.php"><i class="ti ti-circle me-2 font"></i>New Appointment</a>-->
-                  <!--</li>--
-                          <li class="nav-item">
-                              <a href="accepted-appointment.php"><i class="ti ti-circle me-2 font"></i>Accepted
-                                  Appointment</a>
-                          </li>
-                          <li class="nav-item">
-                              <a href="rejected-appointment.php"><i class="ti ti-circle me-2 font"></i>Rejected
-                                  Appointment</a>
-                          </li>
-                      </ul>
-                      !-- //nav-second-level --
-                  </li>-->
-
-
-                  <li class="nav-item">
-                      <a href="add-staff.php"><i class="ti ti-users me-2"></i>Staff<span class="fa arrow"></span> </a>
-                      <ul class="nav nav-second-level collapse nav-item">
-                          <li class="nav-item">
-                              <a href="add-staff.php"><i class="ti ti-circle me-2 font"></i>Add Staff</a>
-                          </li>
-                          <li class="nav-item">
-                              <a href="manage-staff.php"><i class="ti ti-circle me-2 font"></i>Manage Staff</a>
-                          </li>
-
-
-                      </ul>
-                      <!-- /nav-second-level -->
-                  </li>
-
-                  <li class="nav-item">
-                      <a href="add-services.php"><i class="ti ti-shopping-cart me-2"></i>Cashier<span
-                              class="fa arrow"></span> </a>
-                      <ul class="nav nav-second-level collapse nav-item">
-                          <li class="nav-item">
-                              <a href="Cashier/cashier.php" target="_blank"><i
-                                      class="ti ti-circle me-2 font"></i>Cart</a>
-                          </li>
-                      </ul>
-                      <!-- /nav-second-level -->
-                  </li>
-
                   <li class="nav-item">
                       <a href="add-services.php"><i class="ti ti-hotel-service me-2"></i>Services/Product<span
                               class="fa arrow"></span> </a>
@@ -112,32 +56,10 @@
                               <a href="manage-services.php"><i class="ti ti-circle me-2 font"></i>Manage</a>
                           </li>
                       </ul>
-                      <!-- /nav-second-level -->
                   </li>
-
-
-                  <!--    <li class="nav-item">-->
-                  <!--  <a href="order.php" class="chart-nav"><i class="ti ti-file-invoice me-2"></i>Orders</a>-->
-                  <!--</li>
-              <li class="nav-item">
-              <a href="add-services.php"><i class="ti ti-file-invoice me-2"></i>Orders<span class="fa arrow"></span> </a>
-              <ul class="nav nav-second-level collapse nav-item">
-                <li class="nav-item">
-                  <a href="order.php"><i class="ti ti-circle me-2 font"></i>Add</a>
-                </li>
-                <li class="nav-item">
-                  <a href="view_order.php"><i class="ti ti-circle me-2 font"></i>Manage</a>
-                </li>
-              </ul>
-              <!-- /nav-second-level --
-            </li>-->
-
                   <li class="nav-item">
                       <a href="invoices.php" class="chart-nav"><i class="ti ti-wallet me-2"></i>Invoices</a>
                   </li>
-
-
-                  <!--reports-->
                   <li class="nav-item">
                       <a href="#"><i class="ti ti-file me-2"></i>Reports<span class="fa arrow"></span> </a>
                       <ul class="nav nav-second-level collapse nav-item">
@@ -145,56 +67,22 @@
                               <a href="bwdates-reports-ds.php" class="chart-nav"><i class="ti ti-report me-2"></i>Sales
                                   Report</a>
                           </li>
-                          <!--<li class="nav-item">
-              <a href="pro_sale.php" class="chart-nav"><i class="ti ti-report me-2"></i>Product Sales Report</a>
-            </li>-->
+                      </ul>
+                  </li>
 
+                  </li>
+                  <li class="nav-item">
+                      <a href="add-staff.php"><i class="ti ti-users me-2"></i>Staff<span class="fa arrow"></span> </a>
+                      <ul class="nav nav-second-level collapse nav-item">
                           <li class="nav-item">
-                              <a href="staff_commision.php" class="chart-nav"><i class="ti ti-report me-2"></i>Staff
-                                  Commision</a>
+                              <a href="add-staff.php"><i class="ti ti-circle me-2 font"></i>Add Staff</a>
                           </li>
-
                           <li class="nav-item">
-                              <a href="top_services.php" class="chart-nav"><i class="ti ti-star me-2"></i>Top
-                                  Services</a>
+                              <a href="manage-staff.php"><i class="ti ti-circle me-2 font"></i>Manage Staff</a>
                           </li>
-
-                          <li class="nav-item">
-                              <a href="top_staff.php" class="chart-nav"><i class="ti ti-star me-2"></i>Top Staff</a>
-                          </li>
-
                       </ul>
                       <!-- /nav-second-level -->
                   </li>
-
-
-
-                  <!--<li class="nav-item">
-                      <a href="#"><i class="ti ti-id-badge me-2"></i>Plan <span class="fa arrow"></span></a>
-                      <ul class="nav nav-second-level collapse">
-                          <li class="nav-item">
-                              <a href="add_plan.php"><i class="ti ti-circle me-2 font"></i>Add</a>
-                          </li>
-                          <li class="nav-item">
-                              <a href="manage_plan.php"><i class="ti ti-circle me-2 font"></i>Manage</a>
-                          </li>
-                      </ul>
-
-                  </li>-->
-
-                  <!--<li class="nav-item">
-                      <a href="#"><i class="ti ti-files me-2"></i>Subscription <span class="fa arrow"></span></a>
-                      <ul class="nav nav-second-level collapse">
-                          <li class="nav-item">
-                              <a href="add_subscribe.php"><i class="ti ti-circle me-2 font"></i>Add</a>
-                          </li>
-                          <li class="nav-item">
-                              <a href="manage_subscribe.php"><i class="ti ti-circle me-2 font"></i>Manage</a>
-                          </li>
-                      </ul>
-
-                  </li>-->
-
 
                   <li class="nav-item">
                       <a href="add-category.php"><i class="ti ti-globe me-2"></i>Category<span class="fa arrow"></span>
@@ -207,94 +95,40 @@
                               <a href="manage-category.php"><i class="ti ti-circle me-2 font"></i>Manage Category</a>
                           </li>
                       </ul>
-                      <!-- /nav-second-level -->
                   </li>
-
-
-                  <!--<li class="nav-item">
-                      <a href="search-appointment.php" class="chart-nav"><i
-                              class="ti ti-adjustments-search me-2"></i>Search Appointment</a>
-                  </li>-->
-
-                  <!--<li class="nav-item">
-                      <a href="add-tax.php"><i class="ti ti-tag me-2"></i>Tax<span class="fa arrow"></span> </a>
-                      <ul class="nav nav-second-level collapse nav-item">
-                          !--<li class="nav-item">-->
-                  <!--  <a href="add-tax.php"><i class="ti ti-circle me-2 font"></i>Add Tax</a>-->
-                  <!--</li>--
-                          <li class="nav-item">
-                              <a href="manage-tax.php"><i class="ti ti-circle me-2 font"></i>Manage Tax</a>
-                          </li>
-                      </ul>
-                      !-- /nav-second-level --
-                  </li>-->
-
-
-
-
-                  <li class="nav-item">
-                      <a href="#"><i class="ti ti-menu me-2"></i>Staff Scheduling<span class="fa arrow"></span> </a>
-                      <ul class="nav nav-second-level collapse nav-item">
-                          <li class="nav-item">
-                              <a href="schedule-staff.php"><i class="ti ti-circle me-2 font"></i>Add</a>
-                          </li>
-                          <li class="nav-item">
-                              <a href="view_schedule.php"><i class="ti ti-circle me-2 font"></i>Manage </a>
-                          </li>
-
-
-                      </ul>
-
-                  </li>
-
                   <li class="nav-item">
                       <a href="branding.php"><i class="ti ti-hotel-service me-2"></i>Branding<span
                               class="fa arrow"></span> </a>
-                      <!-- /nav-second-level -->
                   </li>
-
-
+                  <?php } ?>
+                  <!--reports-->
+                  <?php if ($_SESSION['bpmsut'] == 'cashier') { ?>
+                  <li class="nav-item">
+                      <a href="#"><i class="ti ti-file me-2"></i>Reports Cashier use<span class="fa arrow"></span> </a>
+                      <ul class="nav nav-second-level collapse nav-item">
+                          <li class="nav-item">
+                              <a href="bwdates-reports-ds-cashier.php" class="chart-nav"><i
+                                      class="ti ti-report me-2"></i>Sales
+                                  Report</a>
+                          </li>
+                      </ul>
+                  </li>
+                  <?php } ?>
+                  <li class="nav-item">
+                      <a href="#"><i class="ti ti-shopping-cart me-2"></i>Cashier<span class="fa arrow"></span> </a>
+                      <ul class="nav nav-second-level collapse nav-item">
+                          <li class="nav-item">
+                              <a href="Cashier/cashier.php" target="_blank"><i
+                                      class="ti ti-circle me-2 font"></i>Cart</a>
+                          </li>
+                      </ul>
+                  </li>
                   <li class="nav-item">
                       <a href="logout.php"><i class="ti ti-circle me-2 font"></i>Logout</a>
                   </li>
-
-
-
-
-                  <!--<li class="nav-item">-->
-                  <!--   <a href="subcriber.php" class="chart-nav"><i class="ti ti-tags me-2"></i>Subcriber</a>-->
-                  <!-- </li>-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  <!--<li class="nav-item">-->
-                  <!--  <a href="sales-reports.php" class="chart-nav"><i class="ti ti-file me-2"></i>Sales Report</a>-->
-                  <!--</li>-->
-
-
-                  <!--<li class="nav-item">-->
-                  <!--  <a href="search-invoices.php" class="chart-nav"><i class="ti ti-devices-search me-2"></i>Search Invoice</a>-->
-                  <!--</li>-->
-
-
               </ul>
               <div class="clearfix"> </div>
+
               <!-- //sidebar-collapse -->
           </nav>
       </div>

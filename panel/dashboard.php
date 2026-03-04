@@ -90,10 +90,10 @@ $branding_row = mysqli_fetch_array($branding_query);
 
                 <div class="row">
                     <div class="row mb-2">
-                        <div class="col-md-3 mb-2">
+                        <!--<div class="col-md-3 mb-2">
                             <?php $query1=mysqli_query($con,"Select * from tblcustomers");
-$totalcust=mysqli_num_rows($query1);
-?>
+                                    $totalcust=mysqli_num_rows($query1);
+                                    ?>
                             <div class="dashboard-boxes bg1 ">
                                 <i class="ti ti-user fs"></i>
 
@@ -104,7 +104,25 @@ $totalcust=mysqli_num_rows($query1);
                                 </div>
                             </div>
                             <div class="clearfix"> </div>
+                        </div>-->
+
+                        <div class="col-md-3 mb-2">
+                            <?php $query1=mysqli_query($con,"Select distinct BillingId from tblinvoice where date(PostingDate)=CURDATE()");
+                                    $totalcust=mysqli_num_rows($query1);
+                                    ?>
+                            <div class="dashboard-boxes bg1 ">
+                                <i class="ti ti-user fs"></i>
+
+                                <div class="text-end">
+                                    <label> <?php echo $totalcust;?></label>
+                                    <h4>Day Total Customers</h4>
+
+                                </div>
+                            </div>
+                            <div class="clearfix"> </div>
                         </div>
+
+
                         <!--<div class="col-md-3 mb-2">
                             <?php $query2=mysqli_query($con,"Select * from tblappointment");
 $totalappointment=mysqli_num_rows($query2);
@@ -159,20 +177,7 @@ $totalrejapt=mysqli_num_rows($query4);
                             </div>
                             <div class="clearfix"> </div>
                         </div>-->
-                        <div class="col-md-3 mb-2">
-                            <?php $query5=mysqli_query($con,"Select * from  tblservices");
-$totalser=mysqli_num_rows($query5);
-?>
-                            <div class="dashboard-boxes bg5">
-                                <i class="ti ti-hotel-service fs"></i>
 
-                                <div class="text-end">
-                                    <label> <?php echo $totalser;?></label>
-                                    <h4>Total Services</h4>
-                                </div>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
                         <div class="col-md-3 mb-2">
                             <?php
                                 //todays sale
@@ -292,6 +297,110 @@ $totalser=mysqli_num_rows($query5);
                             <div class="clearfix"> </div>
                         </div>
                         <div class="clearfix"> </div>
+                        <div class="col-md-3 mb-2">
+                            <?php $query5=mysqli_query($con,"Select * from  tblservices");
+$totalser=mysqli_num_rows($query5);
+?>
+                            <div class="dashboard-boxes bg5">
+                                <i class="ti ti-hotel-service fs"></i>
+
+                                <div class="text-end">
+                                    <label> <?php echo $totalser;?></label>
+                                    <h4>Total Services</h4>
+                                </div>
+                            </div>
+                            <div class="clearfix"> </div>
+                        </div>
+                        <!--Total Branches-->
+                        <div class="col-md-3 mb-2">
+                            <?php $query_branch=mysqli_query($con,"Select * from tblbranch");
+$totalbranches=mysqli_num_rows($query_branch);
+?>
+                            <div class="dashboard-boxes bg5">
+                                <i class="ti ti-hotel-service fs"></i>
+
+                                <div class="text-end">
+                                    <label> <?php echo $totalbranches;?></label>
+                                    <h4>Total Branches</h4>
+                                </div>
+                            </div>
+                            <div class="clearfix"> </div>
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="row">
+                        <!----Each Branch Day income-->
+                        <?php
+                        $branch_income_query = mysqli_query($con, "
+                            SELECT 
+                                b.branch_name, 
+                                SUM(sub.total) as daily_branch_income
+                            FROM 
+                                tblbranch b
+                            LEFT JOIN 
+                                (SELECT DISTINCT BillingId, total, branch_id FROM tblinvoice WHERE branch_id IS NOT NULL AND DATE(PostingDate) = CURDATE()) AS sub 
+                            ON 
+                                b.branch_id = sub.branch_id
+                            GROUP BY 
+                                b.branch_id, b.branch_name
+                        ");
+                        $bg_colors = ['bg1', 'bg2', 'bg3', 'bg4', 'bg5', 'bg6', 'bg7', 'bg8', 'bg9'];
+                        $color_index = 0;
+                        while ($branch_row = mysqli_fetch_array($branch_income_query)) {
+                            $branch_income = $branch_row['daily_branch_income'] ? $branch_row['daily_branch_income'] : 0;
+                        ?>
+                        <div class="col-md-3 mb-2">
+                            <div class="dashboard-boxes <?php echo $bg_colors[$color_index % count($bg_colors)]; ?>">
+                                <i class="ti ti-wallet fs"></i>
+                                <div class="text-end">
+                                    <label> <?php echo number_format($branch_income, 2); ?></label>
+                                    <h4><?php echo $branch_row['branch_name']; ?> Day Income</h4>
+                                </div>
+                            </div>
+                            <div class="clearfix"> </div>
+                        </div>
+                        <?php
+                            $color_index++;
+                        }
+                        ?>
+                    </div>
+
+                    <div class="row">
+                        <!----Each Branch Total customers-->
+                        <?php
+                        $branch_customer_query = mysqli_query($con, "
+                            SELECT 
+                                b.branch_name, 
+                                COUNT(DISTINCT sub.BillingId) as daily_customers
+                            FROM 
+                                tblbranch b
+                            LEFT JOIN 
+                                tblinvoice sub
+                            ON 
+                                b.branch_id = sub.branch_id
+                            WHERE 
+                                DATE(sub.PostingDate) = CURDATE()
+                            GROUP BY 
+                                b.branch_id, b.branch_name
+                        ");
+                        while ($branch_cust_row = mysqli_fetch_array($branch_customer_query)) {
+                        ?>
+                        <div class="col-md-3 mb-2">
+                            <div class="dashboard-boxes bg-info">
+                                <i class="ti ti-users fs"></i>
+                                <div class="text-end">
+                                    <label> <?php echo $branch_cust_row['daily_customers']; ?></label>
+                                    <h4><?php echo $branch_cust_row['branch_name']; ?> Day Customers</h4>
+                                </div>
+                            </div>
+                            <div class="clearfix"> </div>
+                        </div>
+                        <?php
+                        }
+                        ?>
                     </div>
 
 

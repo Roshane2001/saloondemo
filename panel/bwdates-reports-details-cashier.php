@@ -71,13 +71,16 @@ $branding_row = mysqli_fetch_array($branding_query);
  <?php
 $fdate=$_POST['fromdate'];
 $tdate=$_POST['todate'];
-$branch_id = $_POST['branch_id'];
-$branch_name = "All Branches";
-if (!empty($branch_id)) {
-    $b_query = mysqli_query($con, "SELECT branch_name FROM tblbranch WHERE branch_id='$branch_id'");
-    $b_res = mysqli_fetch_array($b_query);
-    if ($b_res) {
-        $branch_name = $b_res['branch_name'];
+$branch_id = null;
+$branch_name = 'N/A';
+
+if (isset($_SESSION['bpmsut']) && $_SESSION['bpmsut'] == 'cashier') {
+    $cashierId = $_SESSION['bpmsaid'];
+    $branch_query = mysqli_query($con, "SELECT b.branch_id, b.branch_name FROM tblcashier c JOIN tblbranch b ON c.branch_id = b.branch_id WHERE c.ID = '$cashierId'");
+    $branch_row = mysqli_fetch_assoc($branch_query);
+    if ($branch_row) {
+        $branch_id = $branch_row['branch_id'];
+        $branch_name = $branch_row['branch_name'];
     }
 }
 
@@ -91,8 +94,7 @@ if (!empty($branch_id)) {
 								<th>Service Name</th> 
 								<th>Invoice Date</th> 
 								<th>Time</th>
-								<th>Branch</th> 
-									<th>Total</th> 
+								<th>Total</th> 
 								<th>Action</th>
 							</tr> 
 							</thead> <tbody>
@@ -105,6 +107,9 @@ $sql = "select GROUP_CONCAT(tblservices.ServiceName) as ServiceName,tblinvoice.B
 
 if (!empty($branch_id)) {
     $sql .= " AND tblinvoice.branch_id = '$branch_id'";
+} else {
+    // If no branch is associated with the cashier, return no results for security.
+    $sql .= " AND tblinvoice.branch_id = '0'";
 }
 $sql .= " group by tblinvoice.BillingId";
 $ret=mysqli_query($con, $sql);
@@ -119,7 +124,6 @@ $total+= $row['total'];
 						 	<td><?php  echo $row['ServiceName'];?></td>
 						 	<td><?php  echo date('d-m-Y', strtotime($row['PostingDate'])) ;?></td> 
 						 	<td><?php  echo date('h:i A', strtotime($row['PostingDate']));?></td>
-						 	<td><?php  echo $row['branch_name'];?></td> 
 						 		<td><?php  echo number_format($row['total'], 2); ?></td> 
 						 		<td>
                                     <?php if($row['type'] == 1): ?>
@@ -148,7 +152,6 @@ $cnt=$cnt+1;
 </tbody>
 <tfoot>
     <tr>
-        <td></td>
         <td></td>
         <td></td>
         <td></td>

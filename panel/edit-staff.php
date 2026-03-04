@@ -11,10 +11,11 @@ if(isset($_POST['submit']))
     $sername=$_POST['name'];
     $email=$_POST['email'];
    $contact=$_POST['contact'];
-    $address=$_POST['address'];
+    $nic_no=$_POST['nic_no'];
+    $branch_id=$_POST['branch_id'];
  $eid=$_GET['editid'];
      
-    $query=mysqli_query($con, "update  tbl_staff set name='$sername', email='$email',contact='$email',address='$address' where id ='$eid' ");
+    $query=mysqli_query($con, "update  tbl_staff set name='$sername', email='$email',contact='$contact',nic_no='$nic_no', branch_id='$branch_id' where id ='$eid' ");
     if ($query) {
    
     echo '<script>alert("Staff has been Updated")</script>';
@@ -102,7 +103,19 @@ while ($row=mysqli_fetch_array($ret)) {
 
 ?>
 
-
+                                <div class="form-group col-md-6">
+                                    <label>Branch</label>
+                                    <select class="form-control" name="branch_id" required="true">                    
+                                        <?php
+    							         $query_branch=mysqli_query($con,"select * from tblbranch");
+    							         while($row_branch=mysqli_fetch_array($query_branch))
+    							         {
+    							         ?>
+                                        <option value="<?php echo $row_branch['branch_id'];?>" <?php if($row['branch_id']==$row_branch['branch_id']){ echo 'selected'; } ?>>
+                                            <?php echo $row_branch['branch_name'];?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
                                 <div class="form-group col-md-6"> <label for="exampleInputEmail1">Staff Name</label>
                                     <input type="text" class="form-control" id="name" name="name"
                                         placeholder="Staff Name" value="<?php  echo $row['name'];?>" required="true">
@@ -115,9 +128,9 @@ while ($row=mysqli_fetch_array($ret)) {
                                         placeholder="Contact" value="<?php  echo $row['contact'];?>" required="true">
                                 </div>
 
-                                <div class="form-group col-md-6"> <label for="exampleInputPassword1">Address</label>
-                                    <input type="text" id="address" name="address" class="form-control"
-                                        placeholder="address" value="<?php  echo $row['address'];?>" required="true">
+                                <div class="form-group col-md-6"> <label for="exampleInputPassword1">NIC No</label>
+                                    <input type="text" id="nic_no" name="nic_no" class="form-control"
+                                        placeholder="NIC No" value="<?php  echo $row['nic_no'];?>" required="true">
                                 </div>
                                 <?php } ?>
                                 <div class="col-md-12">

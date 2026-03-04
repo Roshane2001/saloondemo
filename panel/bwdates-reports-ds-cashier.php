@@ -72,7 +72,7 @@ $branding_row = mysqli_fetch_array($branding_query);
                             <h4>Sales reports:</h4>
                         </div>
                         <div class="form-body">
-                            <form method="post" name="bwdatesreport" class="row" action="bwdates-reports-details.php"
+                            <form method="post" name="bwdatesreport" class="row" action="bwdates-reports-details-cashier.php"
                                 enctype="multipart/form-data">
                                 <p style="font-size:16px; color:red" align="center"> <?php if($msg){
     echo $msg;
@@ -85,23 +85,8 @@ $branding_row = mysqli_fetch_array($branding_query);
                                 <div class="form-group col-md-6"> <label for="exampleInputPassword1">To
                                         Date</label><input type="date" class="form-control1" name="todate" id="todate"
                                         value="" required='true'> </div>
-
-                                <div class="form-group col-md-6">
-                                    <label for="branch_id">Branch</label>
-                                    <select class="form-control" name="branch_id" id="branch_id">
-                                        <option value="">All Branches</option>
-                                        <?php
-                                    $query_branch = mysqli_query($con, "select * from tblbranch");
-                                    while ($row_branch = mysqli_fetch_array($query_branch)) {
-                                    ?>
-                                        <option value="<?php echo $row_branch['branch_id']; ?>">
-                                            <?php echo $row_branch['branch_name']; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-
-
-                                <div class="col-md-6">
+                                
+                                <div class="col-md-12" style="padding-top: 20px;">
                                     <button type="submit" name="submit" class="btn btn-default">Submit</button>
                                 </div>
                             </form>

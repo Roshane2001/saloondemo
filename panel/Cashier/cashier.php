@@ -10,56 +10,87 @@ if (strlen($_SESSION['bpmsaid'])==0) {
     $tax_res = mysqli_fetch_array($tax_query);
     $tax_val = $tax_res['value'];
     $tax_name = $tax_res['name'];
+
+    // Fetch Branch Name
+    $branch_name = "";
+    $cid = $_SESSION['bpmsaid'];
+    $query_branch = mysqli_query($con, "SELECT tblbranch.branch_name FROM tblcashier JOIN tblbranch ON tblcashier.branch_id = tblbranch.branch_id WHERE tblcashier.ID='$cid'");
+    $row_branch = mysqli_fetch_array($query_branch);
+    if($row_branch){
+        $branch_name = $row_branch['branch_name'];
+    }
+
+$branding_query = mysqli_query($con, "select * from branding where id=1");
+$branding_row = mysqli_fetch_array($branding_query);
   ?>
 <!DOCTYPE HTML>
 <html>
+
 <head>
-<title>Cashier POS</title>
-<base href="../">
-<link rel="icon" type="image/x-icon" href="images/<?php echo $branding_row['favicon'];?>">
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<!-- Bootstrap Core CSS -->
-<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
-<!-- Custom CSS -->
-<link href="css/style.css" rel='stylesheet' type='text/css' />
-<!-- font CSS -->
-<!-- font-awesome icons -->
-<link href="css/font-awesome.css" rel="stylesheet"> 
-<!-- //font-awesome icons -->
- <!-- js-->
-<script src="js/jquery-1.11.1.min.js"></script>
-<script src="js/modernizr.custom.js"></script>
-<!--webfonts-->
-<link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
-<!--//webfonts--> 
-<!--animate-->
-<link href="css/animate.css" rel="stylesheet" type="text/css" media="all">
-<script src="js/wow.min.js"></script>
-	<script>
-		 new WOW().init();
-	</script>
-<!--//end-animate-->
-<!-- Metis Menu -->
-<script src="js/metisMenu.min.js"></script>
-<script src="js/custom.js"></script>
-<link href="css/custom.css" rel="stylesheet">
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!--//Metis Menu -->
-<style>
+    <title>Cashier POS</title>
+    <base href="../">
+    <link rel="icon" type="image/x-icon" href="images/<?php echo $branding_row['favicon'];?>">
+    <script type="application/x-javascript">
+    addEventListener("load", function() {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    }
+    </script>
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel='stylesheet' type='text/css' />
+    <!-- font CSS -->
+    <!-- font-awesome icons -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <!-- //font-awesome icons -->
+    <!-- js-->
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/modernizr.custom.js"></script>
+    <!--webfonts-->
+    <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic'
+        rel='stylesheet' type='text/css'>
+    <!--//webfonts-->
+    <!--animate-->
+    <link href="css/animate.css" rel="stylesheet" type="text/css" media="all">
+    <script src="js/wow.min.js"></script>
+    <script>
+    new WOW().init();
+    </script>
+    <!--//end-animate-->
+    <!-- Metis Menu -->
+    <script src="js/metisMenu.min.js"></script>
+    <script src="js/custom.js"></script>
+    <link href="css/custom.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!--//Metis Menu -->
+    <style>
     /* Modern POS Dashboard Styles */
     .pos-dashboard {
         padding: 20px;
         background-color: #fff;
-        min-height: 85vh;
+        height: calc(100vh - 80px);
+        overflow-y: auto;
     }
+
     .cbp-spmenu-push div#page-wrapper {
         margin: 0 !important;
     }
+
     button#showLeftPush {
         display: none !important;
     }
-    
+
+    /* Ensure equal height columns for sticky sidebar */
+    .main-page > .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
     /* Category Filter Bar */
     .category-filter-bar {
         display: flex;
@@ -68,12 +99,15 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         padding: 10px 5px 20px 5px;
         margin-bottom: 10px;
         -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; /* Firefox */
+        scrollbar-width: none;
+        /* Firefox */
     }
+
     .category-filter-bar::-webkit-scrollbar {
-        display: none; /* Chrome/Safari */
+        display: none;
+        /* Chrome/Safari */
     }
-    
+
     .cat-pill {
         background: #ffffff;
         border: 1px solid #e8e8e8;
@@ -85,15 +119,15 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         cursor: pointer;
         white-space: nowrap;
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
     }
-    
+
     .cat-pill:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
         color: #2e4758;
     }
-    
+
     .cat-pill.active {
         background: #2e4758;
         color: #ffffff;
@@ -115,17 +149,17 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         border-radius: 16px;
         overflow: hidden;
         border: 1px solid #f0f0f0;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         transition: all 0.3s ease;
         position: relative;
         display: flex;
         flex-direction: column;
         cursor: pointer;
     }
-    
+
     .pos-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
     }
 
     .card-img-wrap {
@@ -135,14 +169,14 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         position: relative;
         overflow: hidden;
     }
-    
+
     .card-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
     }
-    
+
     .pos-card:hover .card-img {
         transform: scale(1.08);
     }
@@ -157,7 +191,7 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         font-weight: 700;
         padding: 4px 10px;
         border-radius: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         z-index: 2;
     }
 
@@ -213,7 +247,7 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         cursor: pointer;
         transition: all 0.2s;
     }
-    
+
     .add-btn:hover {
         background: #2e4758;
         color: #fff;
@@ -225,27 +259,36 @@ if (strlen($_SESSION['bpmsaid'])==0) {
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 15px;
         }
+
         .card-img-wrap {
             height: 120px;
         }
+
         .card-content {
             padding: 12px;
         }
+
         .card-title {
             font-size: 14px;
         }
+
         .price-tag {
             font-size: 16px;
         }
     }
-    
+
     /* Cart Panel Styles */
     .cart-panel {
         background: #fff;
-        min-height: 85vh;
+        height: calc(100vh - 80px);
+        position: sticky;
+        top: 60px;
+        display: flex;
+        flex-direction: column;
         padding: 15px;
         border-left: 1px solid #eee;
     }
+
     .cart-item {
         padding: 10px 0;
         border-bottom: 1px dashed #eee;
@@ -253,116 +296,132 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         justify-content: space-between;
         align-items: center;
     }
+
     .item-details h5 {
         font-size: 14px;
         margin: 0 0 5px;
     }
+
     .qty-btn {
         padding: 0 5px;
         background: #eee;
         border: none;
         border-radius: 3px;
     }
+
     .remove-btn {
         color: red;
         cursor: pointer;
         margin-left: 10px;
     }
+
     .cart-controls {
         display: flex;
         align-items: center;
     }
-    
+
     /* Enhanced Cart Panel */
     .cart-items-container {
-        height: 40vh;
+        flex: 1;
         overflow-y: auto;
         margin-bottom: 15px;
         border-top: 1px solid #eee;
         border-bottom: 1px solid #eee;
     }
+
     .payment-methods button {
         margin-right: 5px;
         margin-bottom: 5px;
     }
+
     .payment-methods button.active {
         background-color: #2e4758;
         color: #fff;
     }
+
     .billing-summary-panel {
         background-color: #f9f9f9;
         padding: 10px;
         border-radius: 5px;
     }
+
     .customer-info-panel {
         background-color: #f0f4f7;
         padding: 10px;
         border-radius: 5px;
         margin-bottom: 10px;
     }
+
     .action-buttons .btn {
         margin-bottom: 5px;
     }
+
     .input-group-text {
         font-size: 0.8rem;
     }
+
     #amountReceived {
         font-weight: bold;
         font-size: 1.1rem;
     }
-</style>
-</head> 
+    </style>
+</head>
+
 <body class="cbp-spmenu-push">
-	<div class="main-content">
-		<!-- header-starts -->
-	 <?php include_once('../includes/header.php');?>
-		<!-- //header-ends -->
-		<!-- main content start-->
-		<div id="page-wrapper">
-			<div class="main-page">
+    <div class="main-content">
+        <!-- header-starts -->
+        <?php include_once('../includes/header.php');?>
+        <!-- //header-ends -->
+        <!-- main content start-->
+        <div id="page-wrapper">
+            <div class="main-page">
                 <div class="row">
                     <div class="col-md-9">
-                <div class="pos-dashboard">
-                    <!-- Category Filter -->
-                    <div class="category-filter-bar">
-                        <button class="cat-pill active" onclick="filterSelection('all', this)">All</button>
-                        <?php
+                        <div class="pos-dashboard">
+                            <!-- Category Filter -->
+                            <div class="category-filter-bar">
+                                <button class="cat-pill active" onclick="filterSelection('all', this)">All</button>
+                                <?php
                         $ret=mysqli_query($con,"select * from tbl_category where status='1'");
                         while ($row=mysqli_fetch_array($ret)) {
                         ?>
-                        <button class="cat-pill" onclick="filterSelection('<?php echo $row['id'];?>', this)"><?php echo $row['name'];?></button>
-                        <?php } ?>
-                    </div>
+                                <button class="cat-pill"
+                                    onclick="filterSelection('<?php echo $row['id'];?>', this)"><?php echo $row['name'];?></button>
+                                <?php } ?>
+                            </div>
 
-                    <!-- Items Grid -->
-                    <div class="pos-grid">
-                        <?php
+                            <!-- Items Grid -->
+                            <div class="pos-grid">
+                                <?php
                         $ret=mysqli_query($con,"select * from tblservices");
                         while ($row=mysqli_fetch_array($ret)) {
                         ?>
-                        <div class="pos-card filterDiv <?php echo $row['cate_id'];?>" onclick="addToCart(<?php echo $row['ID'];?>, '<?php echo htmlspecialchars(addslashes($row['ServiceName']));?>', <?php echo $row['Cost'];?>)">
-                            <div class="card-img-wrap">
-                                <img src="images/<?php echo $row['Image'];?>" class="card-img" alt="<?php echo $row['ServiceName'];?>">
-                                <span class="status-badge">Available</span>
-                            </div>
-                            <div class="card-content">
-                                <h3 class="card-title"><?php echo $row['ServiceName'];?></h3>
-                                <p class="card-desc"><?php echo $row['Description'];?></p>
-                                <div class="card-footer">
-                                    <span class="price-tag">LKR<?php echo number_format($row['Cost'], 0);?></span>
-                                    <button class="add-btn" title="Add to Cart">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
+                                <div class="pos-card filterDiv <?php echo $row['cate_id'];?>"
+                                    onclick="addToCart(<?php echo $row['ID'];?>, '<?php echo htmlspecialchars(addslashes($row['ServiceName']));?>', <?php echo $row['Cost'];?>)">
+                                    <div class="card-img-wrap">
+                                        <img src="images/<?php echo $row['Image'];?>" class="card-img"
+                                            alt="<?php echo $row['ServiceName'];?>">
+                                        <span class="status-badge">Available</span>
+                                    </div>
+                                    <div class="card-content">
+                                        <h3 class="card-title"><?php echo $row['ServiceName'];?></h3>
+                                        <p class="card-desc"><?php echo $row['Description'];?></p>
+                                        <div class="card-footer">
+                                            <span
+                                                class="price-tag">LKR<?php echo number_format($row['Cost'], 0);?></span>
+                                            <button class="add-btn" title="Add to Cart">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
+                                <?php } ?>
                             </div>
                         </div>
-                        <?php } ?>
-                    </div>
-                </div>
                     </div>
                     <div class="col-md-3">
                         <div class="cart-panel">
-                            
+
                             <!-- 1. Order Cart Section -->
                             <h5 class="mb-2">Order Cart</h5>
                             <div id="cartItems" class="cart-items-container">
@@ -371,67 +430,81 @@ if (strlen($_SESSION['bpmsaid'])==0) {
 
                             <!-- 3. Billing Summary Panel -->
                             <div class="billing-summary-panel">
-                                <div class="d-flex justify-content-between"><span>Subtotal:</span> <span id="subTotal">LKR0.00</span></div>
+                                <div class="d-flex justify-content-between"><span>Subtotal:</span> <span
+                                        id="subTotal">LKR0.00</span></div>
                                 <div class="d-flex justify-content-between align-items-center mt-1">
                                     <span>Discount (%):</span>
-                                    <input type="number" id="discountInput" class="form-control form-control-sm" style="width: 60px; text-align: right;" value="0" min="0" max="100" oninput="updateTotals()">
+                                    <input type="number" id="discountInput" class="form-control form-control-sm"
+                                        style="width: 60px; text-align: right;" value="0" min="0" max="100"
+                                        oninput="updateTotals()">
                                 </div>
                                 <hr style="margin: 5px 0;">
-                                <div class="d-flex justify-content-between" style="font-size: 1.2em; color: #2e4758;"><strong>Grand Total:</strong> <strong id="grandTotal">LKR0.00</strong></div>
+                                <div class="d-flex justify-content-between" style="font-size: 1.2em; color: #2e4758;">
+                                    <strong>Grand Total:</strong> <strong id="grandTotal">LKR0.00</strong></div>
                             </div>
 
                             <!-- 4. Payment Section -->
                             <div class="payment-section mt-3">
                                 <h5>Payment</h5>
                                 <div class="payment-methods mb-2">
-                                    <button class="btn btn-default btn-sm active" onclick="selectPaymentMethod(this, 'Cash')">Cash</button>
-                                    <button class="btn btn-default btn-sm" onclick="selectPaymentMethod(this, 'Card')">Card</button>
-                                    <button class="btn btn-default btn-sm" onclick="selectPaymentMethod(this, 'Online')">Online</button>
-                                    <button class="btn btn-default btn-sm" onclick="selectPaymentMethod(this, 'Split')">Split</button>
+                                    <button class="btn btn-default btn-sm active"
+                                        onclick="selectPaymentMethod(this, 'Cash')">Cash</button>
+                                    <button class="btn btn-default btn-sm"
+                                        onclick="selectPaymentMethod(this, 'Card')">Card</button>
+                                    <button class="btn btn-default btn-sm"
+                                        onclick="selectPaymentMethod(this, 'Online')">Online</button>
+                                    <button class="btn btn-default btn-sm"
+                                        onclick="selectPaymentMethod(this, 'Split')">Split</button>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <input type="number" id="amountReceived" class="form-control" placeholder="Amount Received" oninput="calculateBalance()">
+                                    <input type="number" id="amountReceived" class="form-control"
+                                        placeholder="Amount Received" oninput="calculateBalance()">
                                 </div>
                                 <div class="d-flex justify-content-between mb-3">
-                                    <span>Balance / Change:</span> <span id="balanceAmount" style="font-weight:bold; color: green;">LKR0.00</span>
+                                    <span>Balance / Change:</span> <span id="balanceAmount"
+                                        style="font-weight:bold; color: green;">LKR0.00</span>
                                 </div>
                             </div>
 
                             <!-- 5. Action Buttons -->
                             <div class="action-buttons row">
-                                <div class="col-md-6" style="padding-right: 5px;"><button class="btn btn-success btn-block" onclick="processPayment()"><i class="fa fa-check"></i> Confirm</button></div>
-                                <div class="col-md-6" style="padding-left: 5px;"><button class="btn btn-info btn-block" onclick="printReceipt()"><i class="fa fa-print"></i> Print</button></div>
-                                <div class="col-md-12 mt-2"><button class="btn btn-danger btn-block" onclick="clearCart()"><i class="fa fa-times"></i> Cancel</button></div>
+                                <div class="col-md-6" style="padding-right: 5px;"><button
+                                        class="btn btn-success btn-block" onclick="processPayment()"><i
+                                            class="fa fa-check"></i> Confirm</button></div>
+                                <div class="col-md-6" style="padding-left: 5px;"><button class="btn btn-info btn-block"
+                                        onclick="printReceipt()"><i class="fa fa-print"></i> Print</button></div>
+                                <div class="col-md-12 mt-2"><button class="btn btn-danger btn-block"
+                                        onclick="clearCart()"><i class="fa fa-times"></i> Cancel</button></div>
                             </div>
                         </div>
                     </div>
                 </div>
-			</div>
-		</div>
-		 <?php include_once('../includes/footer.php');?>
-	</div>
-	<!-- Classie -->
-		<script src="js/classie.js"></script>
-		<script>
-			var menuLeft = document.getElementById( 'cbp-spmenu-s1' ),
-				showLeftPush = document.getElementById( 'showLeftPush' ),
-				body = document.body;
-				
-			showLeftPush.onclick = function() {
-				classie.toggle( this, 'active' );
-				classie.toggle( body, 'cbp-spmenu-push-toright' );
-				classie.toggle( menuLeft, 'cbp-spmenu-open' );
-				disableOther( 'showLeftPush' );
-			};
-			
-			function disableOther( button ) {
-				if( button !== 'showLeftPush' ) {
-					classie.toggle( showLeftPush, 'disabled' );
-				}
-			}
-		</script>
-	
-<script>
+            </div>
+        </div>
+        <?php include_once('../includes/footer.php');?>
+    </div>
+    <!-- Classie -->
+    <script src="js/classie.js"></script>
+    <script>
+    var menuLeft = document.getElementById('cbp-spmenu-s1'),
+        showLeftPush = document.getElementById('showLeftPush'),
+        body = document.body;
+
+    showLeftPush.onclick = function() {
+        classie.toggle(this, 'active');
+        classie.toggle(body, 'cbp-spmenu-push-toright');
+        classie.toggle(menuLeft, 'cbp-spmenu-open');
+        disableOther('showLeftPush');
+    };
+
+    function disableOther(button) {
+        if (button !== 'showLeftPush') {
+            classie.toggle(showLeftPush, 'disabled');
+        }
+    }
+    </script>
+
+    <script>
     let cart = [];
     let currentPaymentMethod = 'Cash';
     let lastInvoiceId = null;
@@ -451,7 +524,7 @@ if (strlen($_SESSION['bpmsaid'])==0) {
                 }
             }
         }
-        
+
         const pills = document.getElementsByClassName('cat-pill');
         for (let i = 0; i < pills.length; i++) {
             pills[i].classList.remove('active');
@@ -464,7 +537,12 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         if (existingItem) {
             existingItem.qty++;
         } else {
-            cart.push({ id: id, name: name, price: price, qty: 1 });
+            cart.push({
+                id: id,
+                name: name,
+                price: price,
+                qty: 1
+            });
         }
         renderCart();
         updateTotals();
@@ -528,7 +606,7 @@ if (strlen($_SESSION['bpmsaid'])==0) {
 
         document.getElementById('subTotal').innerText = 'LKR' + subtotal.toFixed(2);
         document.getElementById('grandTotal').innerText = 'LKR' + grandTotal.toFixed(2);
-        
+
         calculateBalance();
     }
 
@@ -544,7 +622,7 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         const grandTotal = parseFloat(grandTotalText) || 0;
         const received = parseFloat(document.getElementById('amountReceived').value) || 0;
         const balance = received - grandTotal;
-        
+
         const balanceEl = document.getElementById('balanceAmount');
         balanceEl.innerText = 'LKR' + balance.toFixed(2);
         if (balance < 0) {
@@ -585,7 +663,7 @@ if (strlen($_SESSION['bpmsaid'])==0) {
             });
             return;
         }
-        
+
         const grandTotalText = document.getElementById('grandTotal').innerText.replace('LKR', '');
         const grandTotal = parseFloat(grandTotalText);
         const received = parseFloat(document.getElementById('amountReceived').value) || 0;
@@ -612,7 +690,8 @@ if (strlen($_SESSION['bpmsaid'])==0) {
             preConfirm: async (phone) => {
                 const orderData = {
                     items: cart,
-                    subtotal: parseFloat(document.getElementById('subTotal').innerText.replace('LKR', '')),
+                    subtotal: parseFloat(document.getElementById('subTotal').innerText.replace('LKR',
+                        '')),
                     discount: parseFloat(document.getElementById('discountInput').value) || 0,
                     tax: 0,
                     taxRate: 0,
@@ -629,7 +708,7 @@ if (strlen($_SESSION['bpmsaid'])==0) {
                         data: JSON.stringify(orderData),
                         contentType: 'application/json'
                     });
-                    
+
                     if (response.status !== 'success') {
                         throw new Error(response.message || 'Unknown error');
                     }
@@ -653,46 +732,51 @@ if (strlen($_SESSION['bpmsaid'])==0) {
             }
         });
     }
-    
+
     function printReceipt() {
         if (cart.length === 0) {
             Swal.fire('Cart is empty!', 'Cannot print a receipt for an empty cart.', 'warning');
             return;
         }
         if (lastInvoiceId === null) {
-            Swal.fire('Payment Not Confirmed', 'Please confirm the payment first to generate an invoice ID for the receipt.', 'warning');
+            Swal.fire('Payment Not Confirmed',
+                'Please confirm the payment first to generate an invoice ID for the receipt.', 'warning');
             return;
         }
 
         const brandName = "<?php echo addslashes($branding_row['brand_name']); ?>";
         const address = "<?php echo addslashes($branding_row['address']); ?>";
+        const branchName = "<?php echo addslashes($branch_name); ?>";
         const phone = "<?php echo addslashes($branding_row['phone_no']); ?>";
         const email = "<?php echo addslashes($branding_row['company_email']); ?>";
+        const logo = "<?php echo addslashes($branding_row['logo']); ?>";
 
         let receiptContent = `
             <html>
             <head>
                 <title>Receipt - ${lastInvoiceId}</title>
                 <style>
-                    body { font-family: 'Courier New', monospace; font-size: 12px; margin: 0; padding: 20px; width: 300px; }
-                    .receipt-header { text-align: center; margin-bottom: 15px; }
-                    .receipt-header h2 { margin: 0; font-size: 16px; }
-                    .receipt-header p { margin: 2px 0; font-size: 11px; }
-                    .separator { border-top: 1px dashed #000; margin: 10px 0; }
+                    body { font-family: 'Courier New', monospace; font-size: 12px; margin: 7mm; padding: 0px; width: 58mm; }
+                    .receipt-header { text-align: center; margin-bottom: 12px; margin-top: 10px; }
+                    .receipt-header h2 { margin: 0; font-size: 18px; }
+                    .receipt-header p { margin: 0; font-size: 12px; }
+                    .separator { border-top: 1px dashed #000; margin: 5px 0; }
                     table { width: 100%; border-collapse: collapse; }
                     th, td { padding: 3px 0; }
-                    .items-table th, .items-table td { border-bottom: 1px dashed #ccc; }
+                    .items-table th, .items-table td { border-bottom: 1px dashed #ccc; padding: 2px 0;}
                     .items-table th { text-align: left; }
                     .text-right { text-align: right; }
-                    .totals-table td:first-child { text-align: right; padding-right: 10px; }
+                    .totals-table td:first-child { text-align: right; padding-right: 5px; }
                     .totals-table td { font-weight: bold; }
-                    .footer { text-align: center; margin-top: 20px; border-top: 1px solid #000; padding-top: 5px; font-size: 11px; }
+                    .footer { text-align: center; margin-top: 5px; border-top: 1px solid #000; padding-top: 2px; font-size: 11px; }
                 </style>
             </head>
             <body>
                 <div class="receipt-header">
+                    ${logo ? `<img src="${document.baseURI}images/${logo}" style="max-width: 80px; height: auto; margin-bottom: 5px;">` : ''}
                     <h2>${brandName}</h2>
                     <p>${address.replace(/\r\n|\r|\n/g, '<br>')}</p>
+                    ${branchName ? `<p>${branchName}</p>` : ''}
                     <p>Phone: ${phone}</p>
                     <p>Email: ${email}</p>
                     <div class="separator"></div>
@@ -704,8 +788,8 @@ if (strlen($_SESSION['bpmsaid'])==0) {
                     <thead>
                         <tr>
                             <th>Item</th>
-                            <th class="text-right">Qty</th>
-                            <th class="text-right">Price</th>
+                            <th class="text-right">Qty </th>
+                            <th class="text-right">Price </th>
                             <th class="text-right">Total</th>
                         </tr>
                     </thead>
@@ -716,9 +800,9 @@ if (strlen($_SESSION['bpmsaid'])==0) {
             receiptContent += `
                 <tr>
                     <td>${item.name}</td>
-                    <td class="text-right">${item.qty}</td>
-                    <td class="text-right">${item.price.toFixed(0)}</td>
-                    <td class="text-right">${(item.price * item.qty).toFixed(2)}</td>
+                    <td class="text-right">${item.qty} </td>
+                    <td class="text-right">${item.price.toFixed(0)} </td>
+                    <td class="text-right">${(item.price * item.qty).toFixed(2)} </td>
                 </tr>
             `;
         });
@@ -749,8 +833,8 @@ if (strlen($_SESSION['bpmsaid'])==0) {
         receiptWindow.focus();
         receiptWindow.print();
     }
-</script>
+    </script>
 </body>
-</html><!--  Author Name: Mayuri K. 
- for any PHP, Wordpress, Shopify or Laravel website or software development contact me at work@mayurik.com  -->
+
+</html>
 <?php } ?>

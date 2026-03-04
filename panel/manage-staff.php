@@ -27,7 +27,7 @@ $branding_row = mysqli_fetch_array($branding_query);
 <html>
 
 <head>
-    <title>Manage Tax</title>
+    <title>Manage Staff</title>
     <link rel="icon" type="image/x-icon" href="images/<?php echo $branding_row['favicon'];?>">
     <script type="application/x-javascript">
     addEventListener("load", function() {
@@ -95,13 +95,15 @@ $branding_row = mysqli_fetch_array($branding_query);
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
+                                    <th>NIC No</th>
+                                    <th>Branch</th>
                                     <th>Contact</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-$ret=mysqli_query($con,"select * from  tbl_staff");
+$ret=mysqli_query($con,"select tbl_staff.*, tblbranch.branch_name from tbl_staff left join tblbranch on tbl_staff.branch_id = tblbranch.branch_id");
 $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {
 
@@ -110,6 +112,8 @@ while ($row=mysqli_fetch_array($ret)) {
                                 <tr>
                                     <th scope="row"><?php echo $cnt;?></th>
                                     <td><?php  echo $row['name'];?></td>
+                                    <td><?php  echo $row['nic_no'];?></td>
+                                    <td><?php  echo $row['branch_name'];?></td>
                                     <td><?php  echo $row['contact'];?></td>
                                     </td>
                                     <td><a href="edit-staff.php?editid=<?php echo $row['id'];?>"

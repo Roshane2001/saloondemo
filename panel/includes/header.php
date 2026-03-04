@@ -88,10 +88,18 @@ while($result=mysqli_fetch_array($ret1))
         <!--notification menu end -->
         <div class="profile_details">  
         <?php
-$adid=$_SESSION['bpmsaid'];
-$ret=mysqli_query($con,"select AdminName from tbladmin where ID='$adid'");
-$row=mysqli_fetch_array($ret);
-$name=$row['AdminName'];
+        $adid=$_SESSION['bpmsaid'];
+        if(isset($_SESSION['bpmsut']) && $_SESSION['bpmsut'] == 'cashier'){
+            $ret=mysqli_query($con,"select CashierName from tblcashier where ID='$adid'");
+            $row=mysqli_fetch_array($ret);
+            $name=$row['CashierName'];
+            $role="Cashier";
+        } else {
+            $ret=mysqli_query($con,"select AdminName from tbladmin where ID='$adid'");
+            $row=mysqli_fetch_array($ret);
+            $name=$row['AdminName'];
+            $role="Administrator";
+        }
 
 ?> 
           <ul>
@@ -118,14 +126,16 @@ $name=$row['AdminName'];
                                   </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                  <h4 class="mb-0">Mayuri K.</h4>
-                                  <small class="text-muted">work@mayurik.com</small>
+                                  <h4 class="mb-0"><?php echo $name; ?></h4>
+                                  <small class="text-muted"><?php echo $role; ?></small>
                                 </div>
                               </div>  
                                               
                             </a></li><hr>
+                <?php if($_SESSION['bpmsut'] == 'admin') { ?>
                 <li> <a href="change-password.php"><i class="fa fa-cog me-2"></i> Settings</a> </li> 
                 <li> <a href="admin-profile.php"><i class="fa fa-user me-2"></i> Profile</a> </li> 
+                <?php } ?>
                 <li class="btn-sm btn w-100 btn-danger bg-danger"> <a href="logout .php" class="text-white"> Logout    <i class="fa fa-sign-out text-white"></i></a> </li>
               </ul>
             </li>
