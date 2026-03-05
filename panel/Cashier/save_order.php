@@ -42,10 +42,11 @@ $errorMsg = "";
 foreach ($items as $item) {
     $serviceId = intval($item['id']);
     $qty = intval($item['qty']);
+    $staffId = isset($item['staff_id']) ? intval($item['staff_id']) : 0;
     
     // Insert into tblinvoice
-    $query = "INSERT INTO tblinvoice (Userid, ServiceId, BillingId, tax, discount, qty, total, received_amount, payment_method, type, CashierId, branch_id, PostingDate, customer_phone) 
-              VALUES (NULL, '$serviceId', '$invoiceId', '$taxRate', '$discount', '$qty', '$grandTotal', '$amountReceived', '$paymentMethod', 1, '$cashierId', '$branchId', NOW(), '$customerPhone')";
+    $query = "INSERT INTO tblinvoice (Userid, ServiceId, BillingId, tax, discount, qty, total, received_amount, payment_method, type, CashierId, branch_id, PostingDate, customer_phone, staff) 
+              VALUES (NULL, '$serviceId', '$invoiceId', '$taxRate', '$discount', '$qty', '$grandTotal', '$amountReceived', '$paymentMethod', 1, '$cashierId', '$branchId', NOW(), '$customerPhone', '$staffId')";
               
     if (!mysqli_query($con, $query)) {
         $success = false;

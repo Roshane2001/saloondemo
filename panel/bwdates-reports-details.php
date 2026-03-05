@@ -91,6 +91,7 @@ if (!empty($branch_id)) {
 								<th>Service Name</th> 
 								<th>Invoice Date</th> 
 								<th>Time</th>
+								<th>Staff Name</th>
 								<th>Branch</th> 
 									<th>Total</th> 
 								<th>Action</th>
@@ -98,9 +99,10 @@ if (!empty($branch_id)) {
 							</thead> <tbody>
 <?php
 $total = 0;
-$sql = "select GROUP_CONCAT(tblservices.ServiceName) as ServiceName,tblinvoice.BillingId,tblinvoice.PostingDate,tblinvoice.total,tblinvoice.type,tblbranch.branch_name from  tblinvoice   
+$sql = "select GROUP_CONCAT(tblservices.ServiceName) as ServiceName, GROUP_CONCAT(DISTINCT tbl_staff.name) as StaffName, tblinvoice.BillingId,tblinvoice.PostingDate,tblinvoice.total,tblinvoice.type,tblbranch.branch_name from  tblinvoice   
 	left join tblservices on tblservices.ID=tblinvoice.ServiceId 
 	left join tblbranch on tblbranch.branch_id=tblinvoice.branch_id 
+	left join tbl_staff on tbl_staff.id=tblinvoice.staff
 	where date(tblinvoice.PostingDate) between '$fdate' and '$tdate'";
 
 if (!empty($branch_id)) {
@@ -119,6 +121,7 @@ $total+= $row['total'];
 						 	<td><?php  echo $row['ServiceName'];?></td>
 						 	<td><?php  echo date('d-m-Y', strtotime($row['PostingDate'])) ;?></td> 
 						 	<td><?php  echo date('h:i A', strtotime($row['PostingDate']));?></td>
+						 	<td><?php  echo $row['StaffName'];?></td>
 						 	<td><?php  echo $row['branch_name'];?></td> 
 						 		<td><?php  echo number_format($row['total'], 2); ?></td> 
 						 		<td>
@@ -148,13 +151,8 @@ $cnt=$cnt+1;
 </tbody>
 <tfoot>
     <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Total</td>
-        <td><?php  echo number_format($total, 2); ?></td>
+        <td colspan="7" style="text-align: right;"><strong>Total</strong></td>
+        <td><strong><?php  echo number_format($total, 2); ?></strong></td>
         <td></td>
     </tr>
 </tfoot>

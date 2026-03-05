@@ -11,13 +11,30 @@ if (strlen($_SESSION['bpmsaid'])==0) {
     $tax_val = $tax_res['value'];
     $tax_name = $tax_res['name'];
 
+    // Fetch branches
+    $branches_query = mysqli_query($con, "SELECT * FROM tblbranch");
+    $branches = [];
+    while($branch = mysqli_fetch_assoc($branches_query)) {
+        $branches[] = $branch;
+    }
+
+    // Fetch staff
+    $staff_query = mysqli_query($con, "SELECT id, name, branch_id FROM tbl_staff");
+    $staff_list = [];
+    while($s = mysqli_fetch_assoc($staff_query)) {
+        $staff_list[] = $s;
+    }
+
     // Fetch Branch Name
     $branch_name = "";
+    $branch_id = "";
     $cid = $_SESSION['bpmsaid'];
     $query_branch = mysqli_query($con, "SELECT tblbranch.branch_name FROM tblcashier JOIN tblbranch ON tblcashier.branch_id = tblbranch.branch_id WHERE tblcashier.ID='$cid'");
+    $query_branch = mysqli_query($con, "SELECT tblbranch.branch_id, tblbranch.branch_name FROM tblcashier JOIN tblbranch ON tblcashier.branch_id = tblbranch.branch_id WHERE tblcashier.ID='$cid'");
     $row_branch = mysqli_fetch_array($query_branch);
     if($row_branch){
         $branch_name = $row_branch['branch_name'];
+        $branch_id = $row_branch['branch_id'];
     }
 
 $branding_query = mysqli_query($con, "select * from branding where id=1");
@@ -505,6 +522,10 @@ $branding_row = mysqli_fetch_array($branding_query);
     </script>
 
     <script>
+    const allBranches = <?php echo json_encode($branches); ?>;
+    const allStaff = <?php echo json_encode($staff_list); ?>;
+    const currentBranchId = "<?php echo $branch_id; ?>";
+
     let cart = [];
     let currentPaymentMethod = 'Cash';
     let lastInvoiceId = null;
@@ -532,34 +553,72 @@ $branding_row = mysqli_fetch_array($branding_query);
         element.classList.add('active');
     }
 
-    function addToCart(id, name, price) {
-        const existingItem = cart.find(item => item.id === id);
-        if (existingItem) {
-            existingItem.qty++;
-        } else {
-            cart.push({
-                id: id,
-                name: name,
-                price: price,
-                qty: 1
-            });
+function addToCart(id, name, price) {
+    const staffInBranch = allStaff.filter(s => s.branch_id == currentBranchId);
+    const staffOptions = staffInBranch.map(s =>
+        `<option value="${s.id}">${s.name}</option>`
+    ).join('');
+
+    Swal.fire({
+        title: 'Select Staff',
+        html: `
+            <p>Assign staff for <strong>${name}</strong></p>
+            <select id="swal-staff" class="swal2-input" style="width: 80%;">
+                <option value="">Select Staff</option>
+                ${staffOptions}
+            </select>
+        `,
+        focusConfirm: false,
+        preConfirm: () => {
+            const staffId = document.getElementById('swal-staff').value;
+            if (!staffId) {
+                Swal.showValidationMessage('Please select a staff member');
+                return false;
+            }
+            return {
+                staffId: staffId
+            };
         }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const {
+                staffId
+            } = result.value;
+
+            const staffMember = allStaff.find(s => s.id === staffId);
+            const staffName = staffMember ? staffMember.name : 'Unknown Staff';
+
+            const existingItem = cart.find(item => item.id === id && item.staff_id === staffId);
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({
+                    id: id,
+                    name: name,
+                    price: price,
+                    qty: 1,
+                    staff_id: staffId,
+                    staff_name: staffName
+                });
+            }
+            renderCart();
+            updateTotals();
+        }
+    });
+}
+
+    function removeFromCart(id, staffId) {
+        cart = cart.filter(item => !(item.id === id && item.staff_id === staffId));
         renderCart();
         updateTotals();
     }
 
-    function removeFromCart(id) {
-        cart = cart.filter(item => item.id !== id);
-        renderCart();
-        updateTotals();
-    }
-
-    function updateQty(id, change) {
-        const item = cart.find(item => item.id === id);
+    function updateQty(id, change, staffId) {
+        const item = cart.find(item => item.id === id && item.staff_id === staffId);
         if (item) {
             item.qty += change;
             if (item.qty <= 0) {
-                removeFromCart(id);
+                removeFromCart(id, staffId);
             } else {
                 renderCart();
                 updateTotals();
@@ -575,18 +634,21 @@ $branding_row = mysqli_fetch_array($branding_query);
         }
         let html = '';
         cart.forEach(item => {
+            const staffInfo = item.staff_name ? `<br><small class="text-info">Staff: ${item.staff_name}</small>` :
+                '';
             html += `
                 <div class="cart-item">
                     <div class="item-details" style="flex-grow: 1;">
                         <h5 class="mb-0" style="margin-bottom: 0;">${item.name}</h5>
                         <small class="text-muted">LKR${item.price.toFixed(2)} x ${item.qty}</small>
+                        ${staffInfo}
                     </div>
                     <div class="cart-controls">
-                        <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
+                        <button class="qty-btn" onclick="updateQty(${item.id}, -1, '${item.staff_id}')">-</button>
                         <span class="mx-2" style="margin: 0 8px;">${item.qty}</span>
-                        <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                        <button class="qty-btn" onclick="updateQty(${item.id}, 1, '${item.staff_id}')">+</button>
                         <span class="ml-3 font-weight-bold" style="margin-left: 12px; font-weight: bold;">LKR${(item.price * item.qty).toFixed(2)}</span>
-                        <i class="fa fa-trash remove-btn" onclick="removeFromCart(${item.id})"></i>
+                        <i class="fa fa-trash remove-btn" onclick="removeFromCart(${item.id}, '${item.staff_id}')"></i>
                     </div>
                 </div>
             `;
@@ -765,7 +827,7 @@ $branding_row = mysqli_fetch_array($branding_query);
                     th, td { padding: 3px 0; }
                     .items-table th, .items-table td { border-bottom: 1px dashed #ccc; padding: 2px 0;}
                     .items-table th { text-align: left; }
-                    .text-right { text-align: right; }
+                    .text-right { text-align: right; } // Utility class for right-alignment
                     .totals-table td:first-child { text-align: right; padding-right: 5px; }
                     .totals-table td { font-weight: bold; }
                     .footer { text-align: center; margin-top: 5px; border-top: 1px solid #000; padding-top: 2px; font-size: 11px; }

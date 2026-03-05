@@ -99,6 +99,19 @@ $branding_row = mysqli_fetch_array($branding_query);
                                         <?php } ?>
                                     </select>
                                 </div>
+                                <div class="form-group col-md-6">
+                                    <label for="branch_id">Staff Name</label>
+                                    <select class="form-control" name="staff_id" id="staff_id">
+                                        <option value="">All Staff</option>
+                                        <?php
+                                    $query_staff = mysqli_query($con, "select * from tbl_staff");
+                                    while ($row_staff = mysqli_fetch_array($query_staff)) {
+                                    ?>
+                                        <option value="<?php echo $row_staff['id']; ?>">
+                                            <?php echo $row_staff['name']; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
 
 
                                 <div class="col-md-6">
@@ -115,6 +128,21 @@ $branding_row = mysqli_fetch_array($branding_query);
             <?php include_once('includes/footer.php');?>
         </div>
 
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#branch_id').change(function() {
+                var branch_id = $(this).val();
+                $.ajax({
+                    url: "get-staff.php",
+                    method: "POST",
+                    data: {branch_id: branch_id},
+                    success: function(data) {
+                        $('#staff_id').html(data);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

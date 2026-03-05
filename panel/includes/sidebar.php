@@ -80,6 +80,9 @@
                           <li class="nav-item">
                               <a href="manage-staff.php"><i class="ti ti-circle me-2 font"></i>Manage Staff</a>
                           </li>
+                          <li class="nav-item">
+                              <a href="manage-staff-services.php"><i class="ti ti-circle me-2 font"></i>Manage Staff Services</a>
+                          </li>
                       </ul>
                       <!-- /nav-second-level -->
                   </li>
