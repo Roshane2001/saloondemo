@@ -13,7 +13,7 @@ if (strlen($_SESSION['bpmsaid'] == 0)) {
         $sid = $_POST['sids'];
 
         // New fields
-        $tax = $_POST['tax'];
+        $tax = 0;
         $total = $_POST['total'];
         $staffId = $_POST['name'];
         $payment = $_POST['payment_method'];
@@ -120,23 +120,7 @@ while ($row1=mysqli_fetch_array($ret1)) {
 							 	    <option value="<?php  echo $row1['id'];?>"><?php  echo $row1['name'];?></option>
 							 	    <?php } ?>
 							 	</select>
-							 </div>
-							 
-							  <div class="form-group col-md-6"> 
-							 	<label>Tax</label> 
-							 
-							 	<select class="form-control" id="tax" name="tax" required="true">
-							 	    <option value="">Select Tax</option>
-							 	    <?php
-$ret2=mysqli_query($con,"select *from  tbl_tax");
-$cnt=1;
-while ($row2=mysqli_fetch_array($ret2)) {
-
-?>
-							 	    <option value="<?php  echo $row2['value'];?>"><?php  echo $row2['name'];?></option>
-							 	    <?php } ?>
-							 	</select>
-							 </div>
+							 </div>							 
 <td colspan="4" align="center">
 <button type="submit" name="submit" class="btn btn-default">Submit</button>	<!--  Author Name: Mayuri K. 
  for any PHP, Wordpress, Shopify or Laravel website or software development contact me at work@mayurik.com  -->	
@@ -181,25 +165,14 @@ function calculateTotal() {
         total += parseFloat(checkbox.getAttribute('data-cost')) || 0;
     });
 
-    // Get selected tax rate
-    const taxRate = parseFloat(document.getElementById('tax').value) || 0;
-
-    // Calculate tax
-    const taxAmount = total * (taxRate / 100);
-
-    // Final total
-    const finalTotal = total + taxAmount;
-
     // Set to total field
-    document.getElementById('total').value = finalTotal.toFixed(2);
+    document.getElementById('total').value = total.toFixed(2);
 }
 
 // Event listeners
 document.querySelectorAll('.service-check').forEach(function (checkbox) {
     checkbox.addEventListener('change', calculateTotal);
 });
-
-document.getElementById('tax').addEventListener('change', calculateTotal);
 </script>
 
 	

@@ -111,7 +111,7 @@ if (!empty($branch_id)) {
     // If no branch is associated with the cashier, return no results for security.
     $sql .= " AND tblinvoice.branch_id = '0'";
 }
-$sql .= " group by tblinvoice.BillingId";
+$sql .= " group by tblinvoice.BillingId ORDER BY tblinvoice.PostingDate DESC";
 $ret=mysqli_query($con, $sql);
 $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {

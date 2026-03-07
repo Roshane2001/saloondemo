@@ -97,8 +97,8 @@ $branding_row = mysqli_fetch_array($branding_query);
     <div class="container d-flex align-items-center  py-5" style="min-height: 100vh;">
         <div class="card p-4 p-md-5 w-100 bg-white" style="max-width: 700px;">
             <div class="text-center mb-4">
-                <img src="panel/images/logo.png" width="200px" alt="Logo" class="logo">
-                <h4 class="mt-3">Welcome to BarbarBaba Appointment Booking</h4>
+                <img src="panel/images/<?php echo $branding_row['logo'];?>" width="200px" alt="Logo" class="logo">
+                <h4 class="mt-3">Welcome to <?php echo $branding_row['brand_name'];?> Appointment Booking</h4>
             </div>
 
             <form action="" method="post" id="add_slider" enctype="multipart/form-data">
@@ -135,7 +135,7 @@ $branding_row = mysqli_fetch_array($branding_query);
                         <select id="services" name="serv_id[]" class="form-select select2" multiple="multiple">
                             <option value="">Select a service</option>
                             <?php
-$retr=mysqli_query($con,"select * from  tblservices");
+$retr=mysqli_query($con,"select * from  tblservices where status='1'");
 $cnt=1;
 while ($rowr=mysqli_fetch_array($retr)) {?>
                             <option value="<?php echo $rowr['ID'];?>" data-cost="<?php echo $rowr['Cost']; ?>">
@@ -149,24 +149,8 @@ while ($rowr=mysqli_fetch_array($retr)) {?>
                         <input type="text" id="total" name="total" value="" class="form-control" readonly="">
                     </div>
 
-                    <?php
-$ret=mysqli_query($con,"select * from  tbl_tax");
-$cnt=1;
-while ($row=mysqli_fetch_array($ret)) {?>
-
-                    <div class="col-md-6">
-                        <label for="time" class="form-label"><?php echo $row['name'];?>(%)</label>
-                        <input type="text" id="" value="<?php echo $row['value'];?>" class="form-control tax_value"
-                            readonly="">
-                    </div>
-                    <?php $cnt=$cnt+1; }
-?>
-                    <div class="col-md-6">
-                        <label class="form-label">Total (with Tax)</label>
-                        <input type="text" id="grand_total" name="grand_total" value="" class="form-control" readonly>
-                    </div>
-
-
+                    <input type="hidden" id="grand_total" name="grand_total" value="">
+                    
                     <div class="col-12 text-center mt-4">
                         <button type="button" id="rzp-button1" onclick="add()" class="btn btn-primary w-100">Book
                             Appointment</button>
@@ -204,17 +188,7 @@ while ($row=mysqli_fetch_array($ret)) {?>
             });
 
             $('#total').val(total.toFixed(2)); // Set base price
-
-            // Calculate total tax %
-            let taxPercent = 0;
-            $('.tax_value').each(function() {
-                let val = parseFloat($(this).val()) || 0;
-                taxPercent += val;
-            });
-
-            // Apply tax
-            let finalAmount = total + (total * taxPercent / 100);
-            $('#grand_total').val(finalAmount.toFixed(2)); // Set total with tax
+            $('#grand_total').val(total.toFixed(2));
         });
     });
     </script>

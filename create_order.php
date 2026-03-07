@@ -6,7 +6,12 @@ include('panel/includes/dbconnection.php');
     $keyId = "rzp_test_NztH8uGmFZkb5I";
     $keySecret = "Dqnjxwto91Zvp1NdudTG2ov1";
 
-$amount = (int)($_POST['amount']*100);
+if (!isset($_POST['amount']) || !isset($_POST['receipt'])) {
+    echo json_encode(['error' => ['code' => 'BAD_REQUEST_ERROR', 'description' => 'Missing amount or receipt']]);
+    exit;
+}
+
+$amount = (int)($_POST['amount'] * 100);
 $currency = 'LKR';
 $receipt = $_POST['receipt'];
 $payment_capture = 1;

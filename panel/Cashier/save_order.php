@@ -39,6 +39,24 @@ if(isset($_SESSION['bpmsut']) && $_SESSION['bpmsut'] == 'cashier'){
 $success = true;
 $errorMsg = "";
 
+$postingDate = date('Y-m-d H:i:s'); // Get current time based on timezone in dbconnection.php
+
+// 1. Check Stock Availability First
+foreach ($items as $item) {
+    $serviceId = intval($item['id']);
+    $qty = intval($item['qty']);
+    
+    $stockQuery = mysqli_query($con, "SELECT opening_stock, ServiceName FROM tblservices WHERE ID='$serviceId'");
+    $stockRow = mysqli_fetch_assoc($stockQuery);
+    
+    if ($stockRow) {
+        if ($stockRow['opening_stock'] < $qty) {
+            echo json_encode(['status' => 'error', 'message' => "Insufficient stock for " . $stockRow['ServiceName'] . ". Available: " . $stockRow['opening_stock']]);
+            exit;
+        }
+    }
+}
+
 foreach ($items as $item) {
     $serviceId = intval($item['id']);
     $qty = intval($item['qty']);
@@ -46,7 +64,7 @@ foreach ($items as $item) {
     
     // Insert into tblinvoice
     $query = "INSERT INTO tblinvoice (Userid, ServiceId, BillingId, tax, discount, qty, total, received_amount, payment_method, type, CashierId, branch_id, PostingDate, customer_phone, staff) 
-              VALUES (NULL, '$serviceId', '$invoiceId', '$taxRate', '$discount', '$qty', '$grandTotal', '$amountReceived', '$paymentMethod', 1, '$cashierId', '$branchId', NOW(), '$customerPhone', '$staffId')";
+              VALUES (NULL, '$serviceId', '$invoiceId', '$taxRate', '$discount', '$qty', '$grandTotal', '$amountReceived', '$paymentMethod', 1, '$cashierId', '$branchId', '$postingDate', '$customerPhone', '$staffId')";
               
     if (!mysqli_query($con, $query)) {
         $success = false;
@@ -60,7 +78,7 @@ foreach ($items as $item) {
 }
 
 if ($success) {
-    echo json_encode(['status' => 'success', 'invoice_id' => $invoiceId]);
+    echo json_encode(['status' => 'success', 'invoice_id' => $invoiceId, 'posting_date' => $postingDate]);
 } else {
     echo json_encode(['status' => 'error', 'message' => $errorMsg]);
 }

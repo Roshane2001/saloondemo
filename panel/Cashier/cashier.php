@@ -410,15 +410,22 @@ $branding_row = mysqli_fetch_array($branding_query);
                             <!-- Items Grid -->
                             <div class="pos-grid">
                                 <?php
-                        $ret=mysqli_query($con,"select * from tblservices");
+                        $ret=mysqli_query($con,"select * from tblservices where status='1' OR type='1'");
                         while ($row=mysqli_fetch_array($ret)) {
                         ?>
-                                <div class="pos-card filterDiv <?php echo $row['cate_id'];?>"
-                                    onclick="addToCart(<?php echo $row['ID'];?>, '<?php echo htmlspecialchars(addslashes($row['ServiceName']));?>', <?php echo $row['Cost'];?>)">
+                                <div class="pos-card filterDiv <?php echo $row['cate_id'];?>" onclick="addToCart(<?php echo $row['ID'];?>, '<?php echo htmlspecialchars(addslashes($row['ServiceName']));?>', <?php echo $row['Cost'];?>, <?php echo ($row['type'] == 2) ? 99999 : $row['opening_stock']; ?>)">
                                     <div class="card-img-wrap">
                                         <img src="images/<?php echo $row['Image'];?>" class="card-img"
                                             alt="<?php echo $row['ServiceName'];?>">
-                                        <span class="status-badge">Available</span>
+                                        <?php if ($row['type'] == 2): // Service ?>
+                                            <span class="status-badge">Active</span>
+                                        <?php else: ?>
+                                            <?php if($row['opening_stock'] > 0): ?>
+                                                <span class="status-badge">Stock: <?php echo $row['opening_stock'];?></span>
+                                            <?php else: ?>
+                                                <span class="status-badge" style="background: #dc3545;">Out of Stock</span>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="card-content">
                                         <h3 class="card-title"><?php echo $row['ServiceName'];?></h3>
@@ -474,7 +481,7 @@ $branding_row = mysqli_fetch_array($branding_query);
                                         onclick="selectPaymentMethod(this, 'Split')">Split</button>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <input type="number" id="amountReceived" class="form-control"
+                                    <input type="text" id="amountReceived" class="form-control"
                                         placeholder="Amount Received" oninput="calculateBalance()">
                                 </div>
                                 <div class="d-flex justify-content-between mb-3">
@@ -529,6 +536,7 @@ $branding_row = mysqli_fetch_array($branding_query);
     let cart = [];
     let currentPaymentMethod = 'Cash';
     let lastInvoiceId = null;
+    let lastPostingDate = null;
 
     function filterSelection(category, element) {
         const cards = document.getElementsByClassName('pos-card');
@@ -553,7 +561,18 @@ $branding_row = mysqli_fetch_array($branding_query);
         element.classList.add('active');
     }
 
-function addToCart(id, name, price) {
+function addToCart(id, name, price, maxStock) {
+    // Check total quantity of this item currently in cart
+    let currentQtyInCart = 0;
+    cart.forEach(item => {
+        if (item.id === id) currentQtyInCart += item.qty;
+    });
+
+    if (currentQtyInCart + 1 > maxStock) {
+        Swal.fire('Out of Stock', 'Cannot add more items than available stock (' + maxStock + ').', 'warning');
+        return;
+    }
+
     const staffInBranch = allStaff.filter(s => s.branch_id == currentBranchId);
     const staffOptions = staffInBranch.map(s =>
         `<option value="${s.id}">${s.name}</option>`
@@ -598,7 +617,8 @@ function addToCart(id, name, price) {
                     price: price,
                     qty: 1,
                     staff_id: staffId,
-                    staff_name: staffName
+                    staff_name: staffName,
+                    max_stock: maxStock
                 });
             }
             renderCart();
@@ -616,6 +636,15 @@ function addToCart(id, name, price) {
     function updateQty(id, change, staffId) {
         const item = cart.find(item => item.id === id && item.staff_id === staffId);
         if (item) {
+            if (change > 0) {
+                let currentQtyInCart = 0;
+                cart.forEach(c => { if (c.id === id) currentQtyInCart += c.qty; });
+                
+                if (currentQtyInCart + 1 > item.max_stock) {
+                    Swal.fire('Out of Stock', 'Cannot add more items than available stock.', 'warning');
+                    return;
+                }
+            }
             item.qty += change;
             if (item.qty <= 0) {
                 removeFromCart(id, staffId);
@@ -791,6 +820,7 @@ function addToCart(id, name, price) {
                     confirmButtonText: 'OK'
                 });
                 lastInvoiceId = result.value.invoice_id; // Store invoice ID for printing
+                lastPostingDate = result.value.posting_date; // Store posting date for receipt
             }
         });
     }
@@ -843,7 +873,7 @@ function addToCart(id, name, price) {
                     <p>Email: ${email}</p>
                     <div class="separator"></div>
                     <p><strong>Invoice: #${lastInvoiceId}</strong></p>
-                    <p>Date: ${new Date().toLocaleString()}</p>
+                    <p>Date: ${lastPostingDate ? new Date(lastPostingDate.replace(/-/g, '/')).toLocaleString() : new Date().toLocaleString()}</p>
                 </div>
 
                 <table class="items-table">
