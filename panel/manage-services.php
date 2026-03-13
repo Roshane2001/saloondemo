@@ -109,10 +109,9 @@ $branding_row = mysqli_fetch_array($branding_query);
                                     <th>#</th>
                                     <th>Image</th>
                                     <th>Service/Product Name</th>
-                                    <th>Service/Product</th>
-                                    <th>Stock</th>
                                     <th>Price</th>
                                     <th>Category</th>
+                                    <th>Service Time</th>
                                     <th>Creation Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -122,27 +121,27 @@ $branding_row = mysqli_fetch_array($branding_query);
 $ret=mysqli_query($con,"select *from  tblservices");
 $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {
-
+$time_display = 'N/A';
+if (!empty($row['service_time'])) {
+    $service_time_total = intval($row['service_time']);
+    if ($service_time_total > 0) {
+        $hours = floor($service_time_total / 60);
+        $minutes = $service_time_total % 60;
+        $time_display = '';
+        if ($hours > 0) {
+            $time_display .= $hours . ' hr' . ($hours > 1 ? 's' : '');
+        }
+        if ($minutes > 0) {
+            $time_display .= ($hours > 0 ? ' ' : '') . $minutes . ' min' . ($minutes > 1 ? 's' : '');
+        }
+    }
+}
 ?>
 
                                 <tr>
                                     <th scope="row"><?php echo $cnt;?></th>
                                     <td><img src="images/<?php echo $row['Image'];?>" width="50" height="50"></td>
                                     <td><?php  echo $row['ServiceName'];?></td>
-                                    <td><?php if($row['type']==1){ echo "Product"; } else { echo "Service"; } ?></td>
-                                    <td>
-                                        <?php 
-                                        if($row['type']==1){ 
-                                            if($row['opening_stock'] <= 0) {
-                                                echo "<span style='color:red; font-weight:bold;'>Out of Stock</span>";
-                                            } else {
-                                                echo $row['opening_stock']; 
-                                            }
-                                        } else { 
-                                            echo "-"; 
-                                        } 
-                                        ?>
-                                    </td>
                                     <td><?php  echo number_format($row['Cost'],2);?></td>
                                     <td><?php
 						    $cid=$row['cate_id'];
@@ -150,6 +149,7 @@ while ($row=mysqli_fetch_array($ret)) {
 						    $row1=mysqli_fetch_array($ret1);
 						    echo $row1['name'];
 						 ?></td>
+                                    <td><?php echo $time_display; ?></td>
                                     <td><?php  echo 
 						 date('d-m-Y', strtotime($row['CreationDate']));?></td>
                                     <td><a href="edit-services.php?editid=<?php echo $row['ID'];?>"
@@ -157,11 +157,6 @@ while ($row=mysqli_fetch_array($ret)) {
                                         <a href="manage-services.php?action=delete&&id=<?php echo $row['ID'];?>"
                                             class="btn btn-danger btn-sm"><i class="fa fa-trash-o"
                                                 aria-hidden="true"></i></a> |
-
-                                        <?php if($row['type']==1){?>
-                                        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal"
-                                            data-target="#flipFlop<?php echo $row['ID'];?>"><i class="fa fa-plus"
-                                                aria-hidden="true"></i></a><?php } ?> |
 
                                         <?php if($row['type']==2){ ?>
                                             <?php if($row['status'] == 1): ?>
@@ -232,52 +227,6 @@ $cnt=$cnt+1;
         }
     });
     </script>
-
-    <?php
-$ret5=mysqli_query($con,"select *from  tblservices  ");
-$cnt5=1;
-while ($row5=mysqli_fetch_array($ret5)) {
-
-?>
-
-    <!-- The modal -->
-    <div class="modal fade" id="flipFlop<?php echo $row5['ID'];?>" tabindex="-1" role="dialog"
-        aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="modalLabel">Add STock</h4>
-                </div>
-                <div class="modal-body">
-                    <form action="stock.php" method="POST">
-                        <input type="hidden" class="form-control" id="ID" name="ID" value="<?php echo $row5['ID'];?>">
-                        <div class="form-group">
-                            <label for="first_name">Previouse Stock</label>
-                            <input type="text" class="form-control" id="opening_stock1" name="opening_stock1"
-                                value="<?php echo $row5['opening_stock'];?>" readonly="">
-                        </div>
-                        <div class="form-group">
-                            <label for="last_name">Add Stock</label>
-                            <input type="text" class="form-control" id="opening_stock" name="opening_stock">
-                        </div>
-                        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
-                    </form>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <?php } ?>
-
-
 
 </body>
 

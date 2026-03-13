@@ -85,7 +85,7 @@ $branding_row = mysqli_fetch_array($branding_query);
             <div class="main-page">
 
                 <div class="row">
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select ID from tblappointment where Status='' OR Status IS NULL");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -122,7 +122,7 @@ $totalappointment=mysqli_num_rows($query2);
                             <div class="clearfix"> </div>
                         </div>-->
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query1=mysqli_query($con,"Select distinct BillingId from tblinvoice where date(PostingDate)=CURDATE()");
                                     $totalcust=mysqli_num_rows($query1);
                                     ?>
@@ -139,7 +139,7 @@ $totalappointment=mysqli_num_rows($query2);
                     </div>
 
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select * from tblappointment");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -194,7 +194,7 @@ $totalrejapt=mysqli_num_rows($query4);
                             <div class="clearfix"> </div>
                         </div>-->
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php
                                 //todays sale
                                 $query6=mysqli_query($con,"select tblinvoice.ServiceId as ServiceId, tblservices.Cost
@@ -254,7 +254,7 @@ $totalrejapt=mysqli_num_rows($query4);
                         </div>-->
 
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php
                             //Last Sevendays Sale
                             $query8=mysqli_query($con,"select tblinvoice.ServiceId as ServiceId, tblservices.Cost
@@ -286,7 +286,7 @@ $totalrejapt=mysqli_num_rows($query4);
                     </div>
 
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php
                             //Total Sale
                             $query9=mysqli_query($con,"select tblinvoice.ServiceId as ServiceId, tblservices.Cost
@@ -313,7 +313,7 @@ $totalrejapt=mysqli_num_rows($query4);
                         <div class="clearfix"> </div>
                     </div>
                     <div class="clearfix"> </div>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query5=mysqli_query($con,"Select * from  tblservices");
 $totalser=mysqli_num_rows($query5);
 ?>
@@ -328,7 +328,7 @@ $totalser=mysqli_num_rows($query5);
                         <div class="clearfix"> </div>
                     </div>
                     <!--Total Branches-->
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query_branch=mysqli_query($con,"Select * from tblbranch");
 $totalbranches=mysqli_num_rows($query_branch);
 ?>
@@ -345,7 +345,7 @@ $totalbranches=mysqli_num_rows($query_branch);
                 </div>
                 <div class="clearfix"> </div>
                 <div class="row">
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select ID from tblappointment where date(AptDate)=CURDATE()");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -362,7 +362,7 @@ $totalappointment=mysqli_num_rows($query2);
                         </div>
                         <div class="clearfix"> </div>
                     </div>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select ID from tblappointment where date(AptDate)=CURDATE() AND Status='3'");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -379,7 +379,7 @@ $totalappointment=mysqli_num_rows($query2);
                         </div>
                         <div class="clearfix"> </div>
                     </div>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select ID from tblappointment where date(AptDate)=CURDATE() AND Status='3'");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -414,7 +414,7 @@ $totalappointment=mysqli_num_rows($query2);
                         while ($branch_row = mysqli_fetch_array($branch_income_query)) {
                             $branch_income = $branch_row['daily_branch_income'] ? $branch_row['daily_branch_income'] : 0;
                         ?>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <div class="dashboard-boxes <?php echo $bg_colors[$color_index % count($bg_colors)]; ?>">
                             <i class="ti ti-wallet fs"></i>
                             <div class="text-end">
@@ -450,7 +450,7 @@ $totalappointment=mysqli_num_rows($query2);
                         ");
                         while ($branch_cust_row = mysqli_fetch_array($branch_customer_query)) {
                         ?>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <div class="dashboard-boxes bg-info">
                             <i class="ti ti-users fs"></i>
                             <div class="text-end">
@@ -509,7 +509,7 @@ $cnt=$cnt+1;
                 </div>-->
 
 
-            <?php include_once('calender.php'); ?>
+            
 
 
 

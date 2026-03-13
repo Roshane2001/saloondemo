@@ -1,7 +1,11 @@
 <?php
 include('includes/dbconnection.php');
 
-$query = mysqli_query($con, "SELECT * FROM tblappointment WHERE Status='1'");
+$query = mysqli_query($con, "SELECT ta.*, tb.branch_name, tc.Name as CustomerName 
+                             FROM tblappointment ta 
+                             LEFT JOIN tblbranch tb ON ta.branch_id = tb.branch_id 
+                             LEFT JOIN tblcustomers tc ON ta.Name = tc.ID 
+                             WHERE ta.Status='1'");
 $events = [];
 
 while ($row = mysqli_fetch_assoc($query)) {
@@ -18,7 +22,7 @@ while ($row = mysqli_fetch_assoc($query)) {
     }
 
     $events[] = [
-        'title' => $row['Name'] . ' - ' . implode(', ', $service_names),
+        'title' => '(' . $row['branch_name'] . ') - ' . implode(', ', $service_names),
         'start' => $row['AptDate'] . 'T' . $row['AptTime'],
         'id'    => $row['ID'],
         'description' => implode(', ', $service_names), // optional

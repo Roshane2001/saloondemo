@@ -124,6 +124,57 @@ $branding_row = mysqli_fetch_array($branding_query);
                         <div class="clearfix"> </div>
                     </div>
 
+                    <div class="col-md-4 mb-2">
+                        <?php
+                                // Today's processed (Completed or Absent) appointments for the specific branch
+                                $query_appts = mysqli_query($con, "SELECT COUNT(ID) as total_appts FROM tblappointment WHERE DATE(AptDate) = CURDATE() AND branch_id = '$branchId' AND (Status = '3' OR Status = '4')");
+                                $appts_row = mysqli_fetch_assoc($query_appts);
+                                $today_appts = $appts_row['total_appts'] ? $appts_row['total_appts'] : 0;
+                                ?>
+                        <div class="dashboard-boxes bg5">
+                            <i class="ti ti-list fs"></i>
+                            <div class="text-end">
+                                <label> <?php echo $today_appts;?></label>
+                                <h4>Day Branch Appoinment</h4>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <?php
+                                // Today's COMPLETED appointments for the specific branch
+                                $query_appts_completed = mysqli_query($con, "SELECT COUNT(ID) as total_appts FROM tblappointment WHERE DATE(AptDate) = CURDATE() AND branch_id = '$branchId' AND Status = '3'");
+                                $appts_row_completed = mysqli_fetch_assoc($query_appts_completed);
+                                $today_appts_completed = $appts_row_completed['total_appts'] ? $appts_row_completed['total_appts'] : 0;
+                                ?>
+                        <div class="dashboard-boxes bg3">
+                            <i class="ti ti-check fs"></i>
+                            <div class="text-end">
+                                <label> <?php echo $today_appts_completed;?></label>
+                                <h4>Day Branch Appoinments completed</h4>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <?php
+                                // Today's ABSENT appointments for the specific branch
+                                $query_appts_absent = mysqli_query($con, "SELECT COUNT(ID) as total_appts FROM tblappointment WHERE DATE(AptDate) = CURDATE() AND branch_id = '$branchId' AND Status = '4'");
+                                $appts_row_absent = mysqli_fetch_assoc($query_appts_absent);
+                                $today_appts_absent = $appts_row_absent['total_appts'] ? $appts_row_absent['total_appts'] : 0;
+                                ?>
+                        <div class="dashboard-boxes bg4">
+                            <i class="ti ti-file fs"></i>
+                            <div class="text-end">
+                                <label> <?php echo $today_appts_absent;?></label>
+                                <h4>Day Branch Appoinments Absent</h4>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+
 
                     <div class="clearfix"> </div>
                 </div>

@@ -33,7 +33,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     $email    = $row['Email'];
     $name     = $row['Name'];
     $aptDate  = date('d-M-Y', strtotime($row['AptDate']));
-    $aptTime  = date('h:i A', strtotime($row['AptTime']));
+    $aptTime  = date('H:i', strtotime($row['AptTime']));
     $book_id  = $row['AptNumber'];
 // print_r($email);exit;
 

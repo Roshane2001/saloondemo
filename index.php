@@ -13,7 +13,7 @@ $branding_row = mysqli_fetch_array($branding_query);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Appointment Booking</title>
-    <link rel="icon" type="image/x-icon" href="images/<?php echo $branding_row['favicon'];?>">
+    <link rel="icon" type="image/x-icon" href="panel/images/<?php echo $branding_row['favicon'];?>">
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -93,7 +93,7 @@ $branding_row = mysqli_fetch_array($branding_query);
 </head>
 
 <body>
-    
+
     <div class="container d-flex align-items-center  py-5" style="min-height: 100vh;">
         <div class="card p-4 p-md-5 w-100 bg-white" style="max-width: 700px;">
             <div class="text-center mb-4">
@@ -118,6 +118,19 @@ $branding_row = mysqli_fetch_array($branding_query);
                         <label for="phone" class="form-label">Phone Number</label>
                         <input type="tel" id="phone" name="phone" class="form-control"
                             placeholder="Enter your phone number">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="branch" class="form-label">Branch</label>
+                        <select id="branch" name="branch_id" class="form-select" required>
+                            <option value="">Select a branch</option>
+                            <?php
+                            $branch_query=mysqli_query($con,"select * from tblbranch");
+                            while($branch_row=mysqli_fetch_array($branch_query)) {
+                            ?>
+                            <option value="<?php echo $branch_row['branch_id'];?>"><?php echo $branch_row['branch_name'];?></option>
+                            <?php } ?>
+                        </select>
                     </div>
 
                     <div class="col-md-6">
@@ -149,10 +162,8 @@ while ($rowr=mysqli_fetch_array($retr)) {?>
                         <input type="text" id="total" name="total" value="" class="form-control" readonly="">
                     </div>
 
-                    <input type="hidden" id="grand_total" name="grand_total" value="">
-                    
                     <div class="col-12 text-center mt-4">
-                        <button type="button" id="rzp-button1" onclick="add()" class="btn btn-primary w-100">Book
+                        <button type="submit" class="btn btn-primary w-100">Book
                             Appointment</button>
                     </div>
                 </div>
@@ -198,7 +209,6 @@ while ($rowr=mysqli_fetch_array($retr)) {?>
         color: red !important;
     }
     </style>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"
         integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -232,9 +242,12 @@ while ($rowr=mysqli_fetch_array($retr)) {?>
                     required: true
 
                 },
-                serv_id: {
+                'serv_id[]': {
                     required: true
 
+                },
+                branch_id: {
+                    required: true
                 },
                 phone: {
                     required: true,
@@ -249,8 +262,11 @@ while ($rowr=mysqli_fetch_array($retr)) {?>
                     required: "Please enter a  name."
                 },
 
-                serv_id: {
-                    required: "Please enter a serv_id."
+                'serv_id[]': {
+                    required: "Please select at least one service."
+                },
+                branch_id: {
+                    required: "Please select a branch."
                 },
                 email: {
                     required: "Please enter a email."
@@ -266,118 +282,28 @@ while ($rowr=mysqli_fetch_array($retr)) {?>
                 }
             },
             submitHandler: function(form) {
-                createOrder();
+                var formData = $(form).serialize();
+                $.ajax({
+                    url: 'booking.php',
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.trim() === 'success') {
+                            alert('Thank you for your booking request. We will confirm it shortly.');
+                            window.location.href = 'index.php';
+                        } else {
+                            alert('An error occurred during booking: ' + response);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert('A system error occurred. Please try again later.');
+                    }
+                });
             }
         });
     });
     </script>
-    <?php
-
-
-
-    $keyId = "rzp_test_NztH8uGmFZkb5I";
-    $keySecret = "Dqnjxwto91Zvp1NdudTG2ov1";
-
-
-
-function generateUniqueRandomId($length = 5)
-{
-  $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  $randomId = '';
-  for ($i = 0; $i < $length; $i++) {
-    $randomId .= $characters[rand(0, strlen($characters) - 1)];
-  }
-  return $randomId;
-}
-
- $newRandomId = generateUniqueRandomId();
-?>
-    <script>
-    function add() {
-        if ($('#add_slider').valid()) {
-            createOrder();
-        }
-    };
-
-    function createOrder() {
-
-        var recv = "<?php echo $newRandomId; ?>";
-        var name = $("input[name='name']").val();
-        
-        var amount = $("input[name='grand_total']").val();
-        var actual_amount = amount * 100;
-        var description = 'Order Payment'; // Change description as per your requirement
-        var formData = $('#add_slider').serialize();
-
-        $.ajax({
-            url: 'create_order.php', // Your PHP script to create order
-            method: 'POST',
-            dataType: 'json',
-            data: {
-                amount: amount,
-                currency: 'LKR',
-                receipt: recv, // You can set your custom receipt ID here
-                payment_capture: 1
-            },
-            success: function(response) {
-                // alert(response.id);
-                if (response.id) {
-                    var orderId = response.id;
-                    var keyId = "<?php echo $keyId; ?>"; // Pass $keyId to JavaScript variable
-                    var options = {
-                        "key": keyId, // Your Razorpay API Key
-                        "amount": actual_amount,
-                        "currency": "LKR",
-                        "name": name,
-                        "description": description,
-                        "image": "",
-                        "order_id": orderId,
-                        "handler": function(response) {
-                            // alert(response);
-                            $.ajax({
-                                url: 'booking.php',
-                                method: 'POST',
-                                data: formData + '&payment_id=' + response
-                                    .razorpay_payment_id + '&order_id=' + orderId,
-
-
-                                success: function(data) {
-                                    alert("Thank you for Booking!");
-                                    // location.reload();
-                                    window.location.href = 'index .php';
-                                    //  window.location.href = 'reciept.php?payment_id='+ response.razorpay_payment_id;
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error(xhr
-                                    .responseText); // Log any errors to console
-                                }
-                            });
-                        }
-                    };
-
-                    var rzp1 = new Razorpay(options);
-                    rzp1.on('payment.failed', function(response) {
-                        console.error(response.error.code);
-                        console.error(response.error.description);
-                        console.error(response.error.source);
-                        console.error(response.error.step);
-                        console.error(response.error.reason);
-                        console.error(response.error.metadata.order_id);
-                        console.error(response.error.metadata.payment_id);
-                    });
-
-                    rzp1.open();
-                } else {
-                    console.error('Order ID not found in response', response);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error creating order:', xhr.responseText);
-            }
-        });
-    }
-    </script>
-
 
     <script>
     function submitForm1(event, id, name, file) {

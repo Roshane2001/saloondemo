@@ -123,7 +123,7 @@ $total+= $row['total'];
 						 	<td><?php  echo $row['BillingId'];?></td>
 						 	<td><?php  echo $row['ServiceName'];?></td>
 						 	<td><?php  echo date('d-m-Y', strtotime($row['PostingDate'])) ;?></td> 
-						 	<td><?php  echo date('h:i A', strtotime($row['PostingDate']));?></td>
+						 	<td><?php  echo date('H:i', strtotime($row['PostingDate']));?></td>
 						 		<td><?php  echo number_format($row['total'], 2); ?></td> 
 						 		<td>
                                     <?php if($row['type'] == 1): ?>

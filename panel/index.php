@@ -103,8 +103,7 @@ $branding_row = mysqli_fetch_array($branding_query);
                                 <i class="toggle-password fa fa-eye"></i>
                             </div>
 
-                            <div class="g-recaptcha pb-3 mt-3" data-sitekey="6LcUBM8pAAAAAHBupsOZjue6_YIn23Ws5IKgGqgc">
-                            </div>
+                            
                             <div>
                                 <input type="submit" name="login" value="Sign In">
                             </div>

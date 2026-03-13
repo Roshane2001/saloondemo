@@ -410,18 +410,19 @@ $branding_row = mysqli_fetch_array($branding_query);
                             <!-- Items Grid -->
                             <div class="pos-grid">
                                 <?php
-                        $ret=mysqli_query($con,"select * from tblservices where status='1' OR type='1'");
+                        $ret=mysqli_query($con,"SELECT s.*, bs.quantity as branch_stock FROM tblservices s LEFT JOIN tbl_branch_stock bs ON s.ID = bs.service_id AND bs.branch_id = '$branch_id' WHERE s.status='1' OR s.type='1'");
                         while ($row=mysqli_fetch_array($ret)) {
+                            $stock = ($row['type'] == 2) ? 99999 : ($row['branch_stock'] === null ? 0 : $row['branch_stock']);
                         ?>
-                                <div class="pos-card filterDiv <?php echo $row['cate_id'];?>" onclick="addToCart(<?php echo $row['ID'];?>, '<?php echo htmlspecialchars(addslashes($row['ServiceName']));?>', <?php echo $row['Cost'];?>, <?php echo ($row['type'] == 2) ? 99999 : $row['opening_stock']; ?>)">
+                                <div class="pos-card filterDiv <?php echo $row['cate_id'];?>" onclick="addToCart(<?php echo $row['ID'];?>, '<?php echo htmlspecialchars(addslashes($row['ServiceName']));?>', <?php echo $row['Cost'];?>, <?php echo $stock; ?>)">
                                     <div class="card-img-wrap">
                                         <img src="images/<?php echo $row['Image'];?>" class="card-img"
                                             alt="<?php echo $row['ServiceName'];?>">
                                         <?php if ($row['type'] == 2): // Service ?>
                                             <span class="status-badge">Active</span>
                                         <?php else: ?>
-                                            <?php if($row['opening_stock'] > 0): ?>
-                                                <span class="status-badge">Stock: <?php echo $row['opening_stock'];?></span>
+                                            <?php if($stock > 0): ?>
+                                                <span class="status-badge">Stock: <?php echo $stock;?></span>
                                             <?php else: ?>
                                                 <span class="status-badge" style="background: #dc3545;">Out of Stock</span>
                                             <?php endif; ?>

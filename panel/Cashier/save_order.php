@@ -46,12 +46,14 @@ foreach ($items as $item) {
     $serviceId = intval($item['id']);
     $qty = intval($item['qty']);
     
-    $stockQuery = mysqli_query($con, "SELECT opening_stock, ServiceName FROM tblservices WHERE ID='$serviceId'");
+    // Check stock in tbl_branch_stock for this branch
+    $stockQuery = mysqli_query($con, "SELECT s.ServiceName, s.type, bs.quantity FROM tblservices s LEFT JOIN tbl_branch_stock bs ON s.ID = bs.service_id AND bs.branch_id = '$branchId' WHERE s.ID='$serviceId'");
     $stockRow = mysqli_fetch_assoc($stockQuery);
     
-    if ($stockRow) {
-        if ($stockRow['opening_stock'] < $qty) {
-            echo json_encode(['status' => 'error', 'message' => "Insufficient stock for " . $stockRow['ServiceName'] . ". Available: " . $stockRow['opening_stock']]);
+    if ($stockRow && $stockRow['type'] == 1) { // Only check stock for products (type 1)
+        $available_qty = $stockRow['quantity'] ? $stockRow['quantity'] : 0;
+        if ($available_qty < $qty) {
+            echo json_encode(['status' => 'error', 'message' => "Insufficient stock for " . $stockRow['ServiceName'] . ". Available: " . $available_qty]);
             exit;
         }
     }
@@ -72,9 +74,13 @@ foreach ($items as $item) {
         break;
     }
     
-    // Update stock
-    $updateStock = "UPDATE tblservices SET opening_stock = opening_stock - $qty WHERE ID = '$serviceId'";
-    mysqli_query($con, $updateStock);
+    // Update stock in tbl_branch_stock if it is a product
+    $checkType = mysqli_query($con, "SELECT type FROM tblservices WHERE ID='$serviceId'");
+    $typeRow = mysqli_fetch_assoc($checkType);
+    if($typeRow && $typeRow['type'] == 1) {
+        $updateStock = "UPDATE tbl_branch_stock SET quantity = quantity - $qty WHERE service_id = '$serviceId' AND branch_id = '$branchId'";
+        mysqli_query($con, $updateStock);
+    }
 }
 
 if ($success) {

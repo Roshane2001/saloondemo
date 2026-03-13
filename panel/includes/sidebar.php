@@ -46,6 +46,52 @@
                       </ul>
                   </li>
                   <li class="nav-item">
+                      <a href="#"><i class="ti ti-users me-2"></i>Customer <span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level collapse">
+                          <li class="nav-item">
+                              <a href="add-customer.php"><i class="ti ti-circle me-2 font"></i>Add</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="customer-list.php"><i class="ti ti-circle me-2 font"></i>Manage</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="visit.php"><i class="ti ti-circle me-2 font"></i>Visit</a>
+                          </li>
+                      </ul>
+
+                  </li>
+
+                  <li class="nav-item">
+                      <a href="all-appointment.php"><i class="ti ti-list me-2"></i>Appointment<span
+                              class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level collapse">
+                          <li class="nav-item">
+                              <a href="add-appointment.php"><i class="ti ti-circle me-2 font"></i>Add Appointment</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="all-appointment.php"><i class="ti ti-circle me-2 font"></i>All Appointment</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="new-appointment.php"><i class="ti ti-circle me-2 font"></i>New Appointment</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="accepted-appointment.php"><i class="ti ti-circle me-2 font"></i>Accepted
+                                  Appointment</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="rejected-appointment.php"><i class="ti ti-circle me-2 font"></i>Rejected
+                                  Appointment</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="branch-appoinment-completed-list.php"><i class="ti ti-circle me-2 font"></i>Branch Completed Appointments</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="branch-appoinment-absent-list.php"><i class="ti ti-circle me-2 font"></i>Branch Absent Appointments</a>
+                          </li>
+                      </ul>
+                      <!-- //nav-second-level -->
+                  </li>
+                  <li class="nav-item">
                       <a href="add-services.php"><i class="ti ti-hotel-service me-2"></i>Services/Product<span
                               class="fa arrow"></span> </a>
                       <ul class="nav nav-second-level collapse nav-item">
@@ -54,6 +100,10 @@
                           </li>
                           <li class="nav-item">
                               <a href="manage-services.php"><i class="ti ti-circle me-2 font"></i>Manage</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="branch-stock-management.php"><i class="ti ti-circle me-2 font"></i>Branch Stock
+                                  management</a>
                           </li>
                       </ul>
                   </li>
@@ -81,7 +131,8 @@
                               <a href="manage-staff.php"><i class="ti ti-circle me-2 font"></i>Manage Staff</a>
                           </li>
                           <li class="nav-item">
-                              <a href="manage-staff-services.php"><i class="ti ti-circle me-2 font"></i>Manage Staff Services</a>
+                              <a href="manage-staff-services.php"><i class="ti ti-circle me-2 font"></i>Manage Staff
+                                  Services</a>
                           </li>
                       </ul>
                       <!-- /nav-second-level -->
@@ -107,6 +158,9 @@
                   <!--reports-->
                   <?php if ($_SESSION['bpmsut'] == 'cashier') { ?>
                   <li class="nav-item">
+                      <a href="cashier-dashboard.php"><i class="ti ti-smart-home me-2"></i> Dashboard</a>
+                  </li>
+                  <li class="nav-item">
                       <a href="#"><i class="ti ti-file me-2"></i>Reports Cashier use<span class="fa arrow"></span> </a>
                       <ul class="nav nav-second-level collapse nav-item">
                           <li class="nav-item">
@@ -115,6 +169,30 @@
                                   Report</a>
                           </li>
                       </ul>
+                  </li>
+                  <li class="nav-item">
+                      <a href="all-appointment.php"><i class="ti ti-list me-2"></i>Appointment<span
+                              class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level collapse">
+                          
+                          <li class="nav-item">
+                              <a href="branch-appoinment-list.php"><i class="ti ti-circle me-2 font"></i>Branch
+                                  Accepted Appointments</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="branch-appoinment-completed-list.php"><i class="ti ti-circle me-2 font"></i>Branch
+                                  Completed Appointments</a>
+                          </li>
+                          <li class="nav-item">
+                              <a href="branch-appoinment-absent-list.php"><i class="ti ti-circle me-2 font"></i>Branch
+                                  Absent Appointments</a>
+                          </li>
+
+                      </ul>
+                      <!-- //nav-second-level -->
+                  </li>
+                  <li class="nav-item">
+                      <a href="branch-stock-management.php"><i class="ti ti-files me-2"></i>Stock Management</a>
                   </li>
                   <?php } ?>
                   <li class="nav-item">
@@ -129,6 +207,11 @@
                   <li class="nav-item">
                       <a href="logout.php"><i class="ti ti-circle me-2 font"></i>Logout</a>
                   </li>
+
+              </ul>
+              <!-- //nav-second-level -->
+              </li>
+
               </ul>
               <div class="clearfix"> </div>
 
