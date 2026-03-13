@@ -6,24 +6,39 @@ include('includes/dbconnection.php');
 if(isset($_POST['login']))
   {
     $adminuser=$_POST['username'];
-    $password=md5($_POST['password']);
-    $query=mysqli_query($con,"select ID from tbladmin where  UserName='$adminuser' && Password='$password' ");
-    $ret=mysqli_fetch_array($query);
-    if($ret>0){
-      $_SESSION['bpmsaid']=$ret['ID'];
-      $_SESSION['bpmsut'] = 'admin';
-      echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>"; // Redirect admin to main dashboard
+    $password=md5($_POST['password']); // MD5 is insecure, consider using password_hash() and password_verify()
+
+    // Check admin table first
+    $stmt_admin = $con->prepare("SELECT ID FROM tbladmin WHERE UserName=? AND Password=?");
+    $stmt_admin->bind_param("ss", $adminuser, $password);
+    $stmt_admin->execute();
+    $stmt_admin->store_result();
+
+    if ($stmt_admin->num_rows > 0) {
+        $stmt_admin->bind_result($adminID);
+        $stmt_admin->fetch();
+        $_SESSION['bpmsaid'] = $adminID;
+        $_SESSION['bpmsut'] = 'admin';
+        echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
+        $stmt_admin->close();
+        exit();
     }
-    else{
-      $query=mysqli_query($con,"select ID from tblcashier where  UserName='$adminuser' && Password='$password' ");
-      $ret=mysqli_fetch_array($query);
-      if($ret>0){
-        $_SESSION['bpmsaid']=$ret['ID'];
+    $stmt_admin->close();
+
+    // If not an admin, check cashier table
+    $stmt_cashier = $con->prepare("SELECT ID FROM tblcashier WHERE UserName=? AND Password=?");
+    $stmt_cashier->bind_param("ss", $adminuser, $password);
+    $stmt_cashier->execute();
+    $stmt_cashier->store_result();
+
+    if ($stmt_cashier->num_rows > 0) {
+        $stmt_cashier->bind_result($cashierID);
+        $stmt_cashier->fetch();
+        $_SESSION['bpmsaid'] = $cashierID;
         $_SESSION['bpmsut'] = 'cashier';
-        echo "<script type='text/javascript'> document.location ='cashier-dashboard.php'; </script>"; // Redirect cashier to cashier dashboard
-      } else {
-        echo "<script>alert('Invalid Details');</script>";
-      }
+        echo "<script type='text/javascript'> document.location ='cashier-dashboard.php'; </script>";
+        $stmt_cashier->close();
+        exit();
     }
   }
   $branding_query = mysqli_query($con, "select * from branding where id=1");

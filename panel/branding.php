@@ -123,7 +123,7 @@ $branding_row = mysqli_fetch_array($branding_query);
 							<form method="post" class="row" enctype="multipart/form-data">
 								
 							 <div class="form-group col-md-6"> <label>Brand Name</label> <input type="text" class="form-control" name="brand_name" value="<?php echo $row['brand_name'];?>" required="true"> </div>
-							 <div class="form-group col-md-6"> <label>Website Name</label> <input type="text" class="form-control" name="website_name" value="<?php echo $row['website_name'];?>" required="true"> </div>
+							 <div class="form-group col-md-6"> <label>Website Name</label> <input type="text" class="form-control" name="website_name" value="<?php echo $row['website_name'];?>"> </div>
                              
                              <div class="form-group col-md-6"> <label>Company Email</label> <input type="email" class="form-control" name="company_email" value="<?php echo $row['company_email'];?>" required="true"> </div>
                              <div class="form-group col-md-6"> <label>Phone Number</label> <input type="text" class="form-control" name="phone_no" value="<?php echo $row['phone_no'];?>" required="true"> </div>
@@ -135,7 +135,7 @@ $branding_row = mysqli_fetch_array($branding_query);
                                  <input type="file" class="form-control" name="logo">
                                  <input type="hidden" name="old_logo" value="<?php echo $row['logo'];?>">
                                  <?php if($row['logo']!=""){ ?>
-                                 <img src="images/<?php echo $row['logo'];?>" width="100" height="100">
+                                 <img src="images/<?php echo $row['logo'];?>" class="img-responsive" style="max-width: 100px; margin-top: 10px;">
                                  <?php } ?>
                              </div>
 
@@ -144,7 +144,7 @@ $branding_row = mysqli_fetch_array($branding_query);
                                  <input type="file" class="form-control" name="favicon">
                                  <input type="hidden" name="old_favicon" value="<?php echo $row['favicon'];?>">
                                  <?php if($row['favicon']!=""){ ?>
-                                 <img src="images/<?php echo $row['favicon'];?>" width="50" height="50">
+                                 <img src="images/<?php echo $row['favicon'];?>" class="img-responsive" style="max-width: 50px; margin-top: 10px;">
                                  <?php } ?>
                              </div>
 

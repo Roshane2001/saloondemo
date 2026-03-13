@@ -17,9 +17,11 @@ if(isset($_POST['submit']))
     $ser_minutes = isset($_POST['ser_minutes']) ? intval($_POST['ser_minutes']) : 0;
     $service_time = ($ser_hours * 60) + $ser_minutes;
 
- $eid=$_GET['editid'];
+    $eid=intval($_GET['editid']);
 
     $image=$_FILES["image"]["name"];
+    $query_success = false;
+
     if($image!="") {
         $extension = strtolower(pathinfo($image, PATHINFO_EXTENSION));
         $allowed_extensions = array("jpg", "jpeg", "png", "gif");
@@ -28,13 +30,22 @@ if(isset($_POST['submit']))
         } else {
             $newimage=md5($image).time().".".$extension;
             move_uploaded_file($_FILES["image"]["tmp_name"],"images/".$newimage);
-            $query=mysqli_query($con, "update tblservices set ServiceName='$sername', Description='$des', Cost='$cost', type='$type', cate_id='$cate_id', Image='$newimage', service_time='$service_time' where ID='$eid' ");
+            
+            $stmt = $con->prepare("UPDATE tblservices SET ServiceName=?, Description=?, Cost=?, type=?, cate_id=?, Image=?, service_time=? WHERE ID=?");
+            $stmt->bind_param("ssdiisii", $sername, $des, $cost, $type, $cate_id, $newimage, $service_time, $eid);
+            if($stmt->execute()){
+                $query_success = true;
+            }
         }
     } else {
-        $query=mysqli_query($con, "update tblservices set ServiceName='$sername', Description='$des', Cost='$cost', type='$type', cate_id='$cate_id', service_time='$service_time' where ID='$eid' ");
+        $stmt = $con->prepare("UPDATE tblservices SET ServiceName=?, Description=?, Cost=?, type=?, cate_id=?, service_time=? WHERE ID=?");
+        $stmt->bind_param("ssdiisi", $sername, $des, $cost, $type, $cate_id, $service_time, $eid);
+        if($stmt->execute()){
+            $query_success = true;
+        }
     }
 
-    if ($query) {
+    if ($query_success) {
    
     echo '<script>alert("Service/Product has been Updated")</script>';
     	echo "<script>window.location.href = 'manage-services.php'</script>";  

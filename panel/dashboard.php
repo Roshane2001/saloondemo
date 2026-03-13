@@ -85,7 +85,7 @@ $branding_row = mysqli_fetch_array($branding_query);
             <div class="main-page">
 
                 <div class="row">
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select ID from tblappointment where Status='' OR Status IS NULL");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -122,7 +122,7 @@ $totalappointment=mysqli_num_rows($query2);
                             <div class="clearfix"> </div>
                         </div>-->
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query1=mysqli_query($con,"Select distinct BillingId from tblinvoice where date(PostingDate)=CURDATE()");
                                     $totalcust=mysqli_num_rows($query1);
                                     ?>
@@ -139,7 +139,7 @@ $totalappointment=mysqli_num_rows($query2);
                     </div>
 
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select * from tblappointment");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -194,28 +194,18 @@ $totalrejapt=mysqli_num_rows($query4);
                             <div class="clearfix"> </div>
                         </div>-->
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php
                                 //todays sale
-                                $query6=mysqli_query($con,"select tblinvoice.ServiceId as ServiceId, tblservices.Cost
-                                from tblinvoice 
-                                join tblservices  on tblservices.ID=tblinvoice.ServiceId where date(PostingDate)=CURDATE();");
-                                while($row=mysqli_fetch_array($query6))
-                                {
-                                $todays_sale=$row['Cost'];
-                                $todysale+=$todays_sale;
-
-                                }
+                                $query6 = mysqli_query($con, "SELECT SUM(total) as todysale FROM (SELECT DISTINCT BillingId, total FROM tblinvoice WHERE date(PostingDate)=CURDATE()) as distinct_invoices");
+                                $row6 = mysqli_fetch_assoc($query6);
+                                $todysale = $row6['todysale'] ?? 0;
                                 ?>
                         <div class="dashboard-boxes bg6">
                             <i class="ti ti-tags fs"></i>
                             <div class="text-end">
                                 <label> <?php 
-                                        if($todysale==''):
-                                        echo "0";
-                                        else:
-                                        echo $todysale;
-                                        endif;
+                                        echo number_format($todysale, 2);
                                         ?>
                                 </label>
                                 <h4>Today Sales</h4>
@@ -254,29 +244,18 @@ $totalrejapt=mysqli_num_rows($query4);
                         </div>-->
 
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php
                             //Last Sevendays Sale
-                            $query8=mysqli_query($con,"select tblinvoice.ServiceId as ServiceId, tblservices.Cost
-                            from tblinvoice 
-                            join tblservices  on tblservices.ID=tblinvoice.ServiceId where date(PostingDate)>=(DATE(NOW()) - INTERVAL 7 DAY);");
-                            while($row8=mysqli_fetch_array($query8))
-                                {
-                                    $sevendays_sale=$row8['Cost'];
-                                    $tseven+=$sevendays_sale;
-                                    }
-                                    ?>
+                            $query8 = mysqli_query($con, "SELECT SUM(total) as sevensale FROM (SELECT DISTINCT BillingId, total FROM tblinvoice WHERE date(PostingDate)>=(DATE(NOW()) - INTERVAL 7 DAY)) as distinct_invoices");
+                            $row8 = mysqli_fetch_assoc($query8);
+                            $tseven = $row8['sevensale'] ?? 0;
+                            ?>
                         <div class="dashboard-boxes bg8">
                             <i class="ti ti-files fs"></i>
                             <div class="text-end">
                                 <label>
-                                    <?php 
-                                        if($tseven==''):
-                                            echo "0";
-                                        else:
-                                            echo $tseven;
-                                        endif;
-                                        ?>
+                                    <?php echo number_format($tseven, 2); ?>
                                 </label>
                                 <h4>Last Sevendays Sale</h4>
 
@@ -286,26 +265,18 @@ $totalrejapt=mysqli_num_rows($query4);
                     </div>
 
 
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php
                             //Total Sale
-                            $query9=mysqli_query($con,"select tblinvoice.ServiceId as ServiceId, tblservices.Cost
-                            from tblinvoice 
-                            join tblservices  on tblservices.ID=tblinvoice.ServiceId");
-                            while($row9=mysqli_fetch_array($query9))
-                                {
-                                    $total_sale=$row9['Cost'];
-                                    $totalsale+=$total_sale;
-                                    }
-                                    ?>
+                            $query9 = mysqli_query($con, "SELECT SUM(total) as totalsale FROM (SELECT DISTINCT BillingId, total FROM tblinvoice) as distinct_invoices");
+                            $row9 = mysqli_fetch_assoc($query9);
+                            $totalsale = $row9['totalsale'] ?? 0;
+                            ?>
                         <div class="dashboard-boxes bg9">
                             <i class="ti ti-pig-money fs"></i>
                             <div class="text-end">
                                 <label>
-                                    <?php if($totalsale==''):echo "0";
-                                        else:
-                                            echo $totalsale;
-                                        endif;?>
+                                    <?php echo number_format($totalsale, 2); ?>
                                 </label>
                                 <h4>Total Sales</h4>
                             </div>
@@ -313,7 +284,7 @@ $totalrejapt=mysqli_num_rows($query4);
                         <div class="clearfix"> </div>
                     </div>
                     <div class="clearfix"> </div>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query5=mysqli_query($con,"Select * from  tblservices");
 $totalser=mysqli_num_rows($query5);
 ?>
@@ -328,7 +299,7 @@ $totalser=mysqli_num_rows($query5);
                         <div class="clearfix"> </div>
                     </div>
                     <!--Total Branches-->
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query_branch=mysqli_query($con,"Select * from tblbranch");
 $totalbranches=mysqli_num_rows($query_branch);
 ?>
@@ -345,7 +316,7 @@ $totalbranches=mysqli_num_rows($query_branch);
                 </div>
                 <div class="clearfix"> </div>
                 <div class="row">
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select ID from tblappointment where date(AptDate)=CURDATE()");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -362,7 +333,7 @@ $totalappointment=mysqli_num_rows($query2);
                         </div>
                         <div class="clearfix"> </div>
                     </div>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select ID from tblappointment where date(AptDate)=CURDATE() AND Status='3'");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -379,7 +350,7 @@ $totalappointment=mysqli_num_rows($query2);
                         </div>
                         <div class="clearfix"> </div>
                     </div>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <?php $query2=mysqli_query($con,"Select ID from tblappointment where date(AptDate)=CURDATE() AND Status='3'");
 $totalappointment=mysqli_num_rows($query2);
 ?>
@@ -414,7 +385,7 @@ $totalappointment=mysqli_num_rows($query2);
                         while ($branch_row = mysqli_fetch_array($branch_income_query)) {
                             $branch_income = $branch_row['daily_branch_income'] ? $branch_row['daily_branch_income'] : 0;
                         ?>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <div class="dashboard-boxes <?php echo $bg_colors[$color_index % count($bg_colors)]; ?>">
                             <i class="ti ti-wallet fs"></i>
                             <div class="text-end">
@@ -450,7 +421,7 @@ $totalappointment=mysqli_num_rows($query2);
                         ");
                         while ($branch_cust_row = mysqli_fetch_array($branch_customer_query)) {
                         ?>
-                    <div class="col-md-3 mb-2">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                         <div class="dashboard-boxes bg-info">
                             <i class="ti ti-users fs"></i>
                             <div class="text-end">

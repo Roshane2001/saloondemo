@@ -8,9 +8,11 @@ if (strlen($_SESSION['bpmsaid']==0)) {
 // Code for deletion
 if($_GET['action']=='delete')
 {
-$id=intval($_GET['id']);
-$query=mysqli_query($con,"delete from tblservices where ID='$id'");
-    if ($query) {
+    $id=intval($_GET['id']);
+    $stmt = $con->prepare("DELETE FROM tblservices WHERE ID = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    if ($stmt->affected_rows > 0) {
      echo "<script>alert('Service deleted.');</script>";
      echo "<script>window.location.href='manage-services.php'</script>";
   } else {
@@ -18,14 +20,16 @@ $query=mysqli_query($con,"delete from tblservices where ID='$id'");
     echo "<script>window.location.href='manage-services.php'</script>";
     }
 }
-
 if(isset($_GET['action']) && $_GET['action'] == 'status_update') {
     $id = intval($_GET['id']);
     $status = intval($_GET['status']);
     $new_status = ($status == 1) ? 0 : 1;
     
-    $query = mysqli_query($con, "UPDATE tblservices SET status='$new_status' WHERE ID='$id'");
-    if($query) {
+    $stmt = $con->prepare("UPDATE tblservices SET status = ? WHERE ID = ?");
+    $stmt->bind_param("ii", $new_status, $id);
+    $stmt->execute();
+
+    if($stmt->affected_rows > 0) {
         echo "<script>alert('Status updated successfully.');</script>";
         echo "<script>window.location.href='manage-services.php'</script>";
     }

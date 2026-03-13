@@ -1,12 +1,15 @@
   <style type="text/css">
-#leftCol {
-    position: fixed;
-    width: 309px;
-    overflow-y: scroll;
-    top: 0;
-    bottom: 0;
+/* Make the sidebar fixed only on larger screens */
+@media (min-width: 768px) {
+    #leftCol {
+        position: fixed;
+        width: 309px;
+        overflow-y: scroll;
+        top: 0;
+        bottom: 0;
+    }
 }
-
+ 
 .me-2 {
     margin-right: 12px;
 }

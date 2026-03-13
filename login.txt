@@ -1,5 +1,5 @@
-Username : mayurik
-Password : 2001roshane
+Username : Supunsaloon
+Password : supunsaloontesting
 
-New updates::::
-1. Sales report Customer name change to Service name with PDF file.
+Do not delete the branch table. branches adding update it in the SQl file. ==Important is it==
+branches add and update the staff and cashier log in. 
